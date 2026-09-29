@@ -40,6 +40,11 @@ export function setQty(id: string, qty: number) {
   cart.set((c) => ({ items: qty <= 0 ? c.items.filter((i) => i.id !== id) : c.items.map((i) => (i.id === id ? { ...i, qty: Math.min(99, qty) } : i)) }));
 }
 
+export const myOrders = createStore<{ code: string; email: string }[]>([], 'lac.orders.v1');
+export function rememberOrder(code: string, email: string) {
+  myOrders.set((o) => [{ code, email }, ...o.filter((x) => x.code !== code)].slice(0, 20));
+}
+
 export const recent = createStore<string[]>([], 'lac.recent.v1');
 export function pushRecent(q: string) {
   const t = q.trim();

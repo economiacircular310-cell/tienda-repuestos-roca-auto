@@ -32,9 +32,23 @@ export async function get<T>(path: string, params: Params = {}, signal?: AbortSi
   return p;
 }
 
-export async function post<T>(path: string, body: unknown): Promise<T> {
-  const r = await fetch(url(path), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-  if (!r.ok) throw new Error(`Error ${r.status}`);
+/** Error de la API con el mensaje apto para el cliente que manda el servidor. */
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
+    super(message);
+  }
+}
+
+export async function post<T>(path: string, body: unknown, headers: Record<string, string> = {}): Promise<T> {
+  const r = await fetch(url(path), { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(body) });
+  if (!r.ok) {
+    const detail = await r.json().catch(() => null);
+    const message = typeof detail?.detail === 'string' ? detail.detail : r.status === 429 ? 'Demasiadas peticiones. Espera un momento.' : `Error ${r.status}`;
+    throw new ApiError(r.status, message);
+  }
   return (await r.json()) as T;
 }
 

@@ -1,6 +1,8 @@
 import os
+import tempfile
 
 os.environ.setdefault("LENIN_SECRET", "clave-de-pruebas")
+os.environ.setdefault("LENIN_DB", os.path.join(tempfile.mkdtemp(prefix="lenin-"), "pruebas.sqlite3"))
 
 import pytest
 

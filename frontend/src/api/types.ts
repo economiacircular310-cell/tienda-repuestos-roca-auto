@@ -220,3 +220,32 @@ export interface Meta {
   sample_vins: { label: string; vin: string }[];
   stats: Stats;
 }
+
+export interface OrderLine {
+  product_id: string;
+  part_number: string;
+  title: string;
+  brand: string;
+  qty: number;
+  unit_price: number;
+  total: number;
+  fitment: string;
+  certificate: { code: string; token: string; vehicle: string; issued: string } | null;
+}
+
+export type OrderStatus = 'recibido' | 'preparando' | 'enviado' | 'entregado' | 'cancelado';
+
+export interface Order {
+  code: string;
+  status: OrderStatus;
+  created_at: string;
+  customer_name: string;
+  vehicle: string | null;
+  lines: OrderLine[];
+  subtotal: number;
+  shipping: number;
+  total: number;
+  shipments: Cart['shipments'];
+  delivery: [string, string] | null;
+  events: { at: string; status: OrderStatus; note: string }[];
+}

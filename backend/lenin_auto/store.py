@@ -13,6 +13,7 @@ from .catalog import TIER_ORDER, VehicleQuery, load_catalog
 from .config import settings
 from .inventory import Product, load_inventory
 from .logistics.shipping import Line, plan_shipments
+from .orders import Order, OrderBook, OrderError, add_business_days, new_order_code
 from .schemas import (
     Availability,
     BrandRef,
@@ -27,6 +28,7 @@ from .schemas import (
     ColumnItem,
     ColumnOut,
     CorrectionOut,
+    CustomerIn,
     DiagnosisOut,
     FacetValueOut,
     FairPriceOut,
@@ -36,6 +38,9 @@ from .schemas import (
     HomeOut,
     ListingGroup,
     MilestoneOut,
+    OrderEventOut,
+    OrderLineOut,
+    OrderOut,
     PlanLineOut,
     PNMatch,
     PriceStats,
@@ -157,6 +162,97 @@ class Store:
         )
 
     # ------------------------------------------------------------------ casos de uso
+
+    @cached_property
+    def orders(self) -> OrderBook:
+        return OrderBook(settings.database)
+
+    def place_order(
+        self,
+        customer: CustomerIn,
+        items: list[tuple[str, int]],
+        vehicle: VehicleQuery | None,
+        idem_key: str | None = None,
+    ) -> OrderOut:
+        """Registra un pedido: precios congelados, certificado por pieza compatible y fechas de entrega."""
+        who = OrderBook.validate_customer(customer.model_dump())
+        quote = self.cart(items)
+        if quote.missing:
+            raise OrderError("Algunas piezas del carrito ya no existen. Actualiza el carrito e inténtalo de nuevo.")
+        if not quote.lines:
+            raise OrderError("El carrito está vacío.")
+        now = datetime.now(UTC)
+        v = vehicle if vehicle and not vehicle.empty else None
+        lines = []
+        for line in quote.lines:
+            p = self.inventory.by_id[line.product.id]
+            fit = assess(p, v, self.catalog)
+            cert = None
+            if v and fit.status == "confirmada":
+                veh = {"make": v.make_id, "model": v.model_id, "year": v.year, "engine": v.engine}
+                issued = certificate.issue(settings.secret, p.id, p.part_number, veh, now)
+                cert = {
+                    "code": issued.code,
+                    "token": issued.token,
+                    "vehicle": self.catalog.vehicle_label(v),
+                    "issued": str(issued.payload["iat"]),
+                }
+            lines.append(
+                {
+                    "product_id": p.id,
+                    "part_number": p.part_number,
+                    "title": p.title,
+                    "brand": self.catalog.brand_by_id[p.brand_id].name,
+                    "qty": line.qty,
+                    "unit_price": p.price,
+                    "total": line.total,
+                    "fitment": fit.status,
+                    "certificate": cert,
+                }
+            )
+        delivery = None
+        if quote.eta:
+            today = now.date()
+            delivery = (
+                add_business_days(today, quote.eta[0]).isoformat(),
+                add_business_days(today, quote.eta[1]).isoformat(),
+            )
+        order = Order(
+            code=new_order_code(),
+            created_at=now.isoformat(timespec="seconds"),
+            status="recibido",
+            customer=who,
+            vehicle={
+                "make": v.make_id,
+                "model": v.model_id,
+                "year": v.year,
+                "engine": v.engine,
+                "label": self.catalog.vehicle_label(v),
+            }
+            if v
+            else None,
+            lines=lines,
+            shipments=[s.model_dump() for s in quote.shipments],
+            totals={"subtotal": quote.subtotal, "shipping": quote.shipping, "total": quote.total},
+            delivery=delivery,
+        )
+        return self.order_out(self.orders.create(order, idem_key))
+
+    def order_out(self, o: Order) -> OrderOut:
+        return OrderOut(
+            code=o.code,
+            status=o.status,
+            created_at=o.created_at,
+            customer_name=o.customer["name"],
+            vehicle=o.vehicle["label"] if o.vehicle else None,
+            lines=[OrderLineOut(**line) for line in o.lines],
+            subtotal=o.totals["subtotal"],
+            shipping=o.totals["shipping"],
+            total=o.totals["total"],
+            shipments=[ShipmentOut(**s) for s in o.shipments],
+            delivery=o.delivery,
+            events=[OrderEventOut(**e) for e in o.events],
+        )
 
     @cached_property
     def stats(self) -> StatsOut:

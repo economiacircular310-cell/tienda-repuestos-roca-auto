@@ -30,6 +30,10 @@ class Settings:
     email: str = os.environ.get("LENIN_EMAIL", "ventas@leninautocars.example")
     whatsapp: str = os.environ.get("LENIN_WHATSAPP", "+00 000 000 0000")
     km_per_year: int = 15_000
+    rate_capacity: int = int(os.environ.get("LENIN_RATE_BURST", "120"))
+    rate_per_second: float = float(os.environ.get("LENIN_RATE_PER_SECOND", "2"))
+    trust_proxy: bool = os.environ.get("LENIN_TRUST_PROXY", "0") == "1"
+    database: str = os.environ.get("LENIN_DB", "lenin_auto.sqlite3")
     secret: bytes = field(default_factory=_secret, repr=False)
 
 

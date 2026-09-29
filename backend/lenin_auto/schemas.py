@@ -205,7 +205,65 @@ class CartItemIn(BaseModel):
 
 
 class CartIn(BaseModel):
-    items: list[CartItemIn]
+    items: list[CartItemIn] = Field(max_length=100)
+
+
+class CustomerIn(BaseModel):
+    name: str = Field(max_length=120)
+    email: str = Field(max_length=160)
+    phone: str = Field(default="", max_length=40)
+    city: str = Field(default="", max_length=80)
+
+
+class VehicleIn(BaseModel):
+    make: str | None = None
+    model: str | None = None
+    year: int | None = Field(default=None, ge=1950, le=2100)
+    engine: str | None = None
+
+
+class OrderIn(BaseModel):
+    customer: CustomerIn
+    items: list[CartItemIn] = Field(min_length=1, max_length=100)
+    vehicle: VehicleIn | None = None
+
+
+class OrderLookupIn(BaseModel):
+    code: str = Field(max_length=40)
+    email: str = Field(max_length=160)
+
+
+class OrderLineOut(BaseModel):
+    product_id: str
+    part_number: str
+    title: str
+    brand: str
+    qty: int
+    unit_price: float
+    total: float
+    fitment: str
+    certificate: CertificateOut | None
+
+
+class OrderEventOut(BaseModel):
+    at: str
+    status: str
+    note: str
+
+
+class OrderOut(BaseModel):
+    code: str
+    status: str
+    created_at: str
+    customer_name: str
+    vehicle: str | None
+    lines: list[OrderLineOut]
+    subtotal: float
+    shipping: float
+    total: float
+    shipments: list[ShipmentOut]
+    delivery: tuple[str, str] | None
+    events: list[OrderEventOut]
 
 
 class CartLineOut(BaseModel):

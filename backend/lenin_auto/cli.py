@@ -200,6 +200,30 @@ def cmd_verificar(a: argparse.Namespace) -> None:
         print(red("\n  ✗ Certificado inválido o alterado\n"))
 
 
+def cmd_pedidos(a: argparse.Namespace) -> None:
+    from .orders import OrderError
+    from .store import get_store
+
+    store = get_store()
+    if a.accion == "listar":
+        orders = store.orders.recent(a.n)
+        if a.json:
+            print(json.dumps([store.order_out(o).model_dump() for o in orders], ensure_ascii=False, indent=2))
+            return
+        for o in orders:
+            print(
+                f"  {bold(o.code)}  {o.created_at[:16]}  {o.status:<11} {o.customer['name']:<24} ${o.totals['total']:>9.2f}"
+            )
+        if not orders:
+            print(dim("  Aún no hay pedidos."))
+        return
+    try:
+        order = store.orders.advance(a.codigo, a.estado, a.nota or "")
+    except OrderError as e:
+        raise SystemExit(red(f"  {e}")) from e
+    print(green(f"  {order.code} → {order.status}"))
+
+
 def cmd_stats(a: argparse.Namespace) -> None:
     from .store import get_store
 
@@ -256,6 +280,15 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     p = add("verificar", cmd_verificar, "verifica un certificado de compatibilidad")
     p.add_argument("token")
+
+    p = add("pedidos", cmd_pedidos, "lista pedidos o cambia su estado")
+    ps = p.add_subparsers(dest="accion", required=True)
+    pl = ps.add_parser("listar")
+    pl.add_argument("-n", type=int, default=20)
+    pa = ps.add_parser("avanzar")
+    pa.add_argument("codigo")
+    pa.add_argument("estado", choices=["preparando", "enviado", "entregado", "cancelado"])
+    pa.add_argument("--nota")
 
     add("stats", cmd_stats, "tamaño del catálogo y rendimiento")
 

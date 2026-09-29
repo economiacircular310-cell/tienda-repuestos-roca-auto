@@ -13,6 +13,7 @@ import { ProductPage } from './pages/ProductPage';
 import { CatalogPage } from './pages/CatalogPage';
 import { ServicePage } from './pages/ServicePage';
 import { VerifyPage } from './pages/VerifyPage';
+import { OrderPage } from './pages/OrderPage';
 
 function Boot() {
   const failed = useMetaFailed();
@@ -76,6 +77,7 @@ export function App() {
   else if (first === 'catalogo') page = <CatalogPage segs={rest} />;
   else if (first === 'servicio') page = <ServicePage />;
   else if (first === 'verificar') page = <VerifyPage />;
+  else if (first === 'pedido') page = <OrderPage key={rest[0] ?? 'nuevo'} code={rest[0]} />;
   else page = <HomePage />;
 
   return (

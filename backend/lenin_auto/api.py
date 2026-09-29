@@ -11,7 +11,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated, Any
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -19,12 +19,16 @@ from fastapi.staticfiles import StaticFiles
 from . import __version__
 from .catalog import VehicleQuery
 from .config import settings
+from .orders import OrderError
 from .schemas import (
     CartIn,
     CartOut,
     CatalogOut,
     DiagnosisOut,
     HomeOut,
+    OrderIn,
+    OrderLookupIn,
+    OrderOut,
     ProductDetailOut,
     SearchOut,
     ServicePlanOut,
@@ -33,6 +37,7 @@ from .schemas import (
     VinOut,
 )
 from .search.engine import SearchRequest, Sort
+from .security import RateLimitMiddleware, SecurityHeadersMiddleware
 from .store import Store, get_store
 from .vin import SAMPLE_VINS
 from .workshop.maintenance import Pack
@@ -53,6 +58,13 @@ app = FastAPI(
     lifespan=lifespan,
 )
 app.add_middleware(GZipMiddleware, minimum_size=1024)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(
+    RateLimitMiddleware,
+    capacity=settings.rate_capacity,
+    rate=settings.rate_per_second,
+    trust_proxy=settings.trust_proxy,
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=os.environ.get("LENIN_CORS", "http://localhost:5173,http://127.0.0.1:5173").split(","),
@@ -200,6 +212,28 @@ def verify(store: StoreDep, token: str) -> VerifyOut:
 @app.post("/api/cart", response_model=CartOut)
 def cart(body: CartIn, store: StoreDep) -> CartOut:
     return store.cart([(i.id, i.qty) for i in body.items])
+
+
+@app.post("/api/orders", response_model=OrderOut, status_code=201)
+def create_order(
+    body: OrderIn, store: StoreDep, idempotency_key: Annotated[str | None, Header(max_length=80)] = None
+) -> OrderOut:
+    """Registra un pedido. Repetir la misma ``Idempotency-Key`` devuelve el mismo pedido."""
+    v = body.vehicle
+    vehicle = vehicle_params(v.make, v.model, v.year, v.engine) if v else None
+    try:
+        return store.place_order(body.customer, [(i.id, i.qty) for i in body.items], vehicle, idempotency_key)
+    except OrderError as e:
+        raise HTTPException(422, str(e)) from e
+
+
+@app.post("/api/orders/lookup", response_model=OrderOut)
+def lookup_order(body: OrderLookupIn, store: StoreDep) -> OrderOut:
+    """Seguimiento con código y correo (misma respuesta si falta cualquiera de los dos)."""
+    order = store.orders.get(body.code, body.email)
+    if order is None:
+        raise HTTPException(404, "No encontramos un pedido con ese código y correo.")
+    return store.order_out(order)
 
 
 @app.get("/api/service-plan", response_model=ServicePlanOut)
