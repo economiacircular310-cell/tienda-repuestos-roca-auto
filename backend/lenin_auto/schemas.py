@@ -55,7 +55,7 @@ class ProductOut(BaseModel):
     reviews: int
     rating_adjusted: float = Field(description="Promedio bayesiano")
     satisfaction: float = Field(description="Cota inferior de Wilson (95 %) de clientes satisfechos")
-    fit: str
+    universal: bool
     oem: list[str]
     xref: list[str]
     specs: list[tuple[str, str]]
@@ -185,6 +185,7 @@ class ProductDetailOut(BaseModel):
     product: ProductOut
     fitment: FitmentOut
     vehicles: list[FitRow]
+    fitment_summary: str = Field(description="Cómo está declarada la aplicación de la pieza")
     alternatives: list[ProductOut]
     related: list[ProductOut]
     brand_trust: BrandTrustOut
@@ -378,6 +379,7 @@ class CatalogOut(BaseModel):
 
 
 class StatsOut(BaseModel):
+    demo: bool = Field(description="True con el inventario de demostración; False con uno importado")
     products: int
     brands: int
     vehicles: int

@@ -493,7 +493,7 @@ function Deals({ home }: { home: Home | null }) {
       <ul className="scroll-thin -mx-4 mt-8 flex snap-x gap-3 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6">
         {home.deals.map((p) => (
           <li key={p.id} className="w-[240px] shrink-0 snap-start">
-            <ProductCard p={p} fits={!!vehicle && p.fit !== '*'} vehicleName={vName} />
+            <ProductCard p={p} fits={!!vehicle && !p.universal} vehicleName={vName} />
           </li>
         ))}
       </ul>

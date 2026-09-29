@@ -54,17 +54,28 @@ function TrustPanel({ d }: { d: ProductDetail }) {
             <span className="tabular font-mono text-sm text-muted">{t.score}/100</span>
           </dd>
           <p className="mt-1 text-xs text-muted">
-            ★ {t.rating.toFixed(2)} bayesiano en {t.reviews.toLocaleString('es')} reseñas · {t.in_stock_pct}% con stock
+            {t.reviews ? `★ ${t.rating.toFixed(2)} bayesiano en ${t.reviews.toLocaleString('es')} reseñas` : 'Aún sin reseñas'} · {t.in_stock_pct}% con stock
             {t.oem_supplier ? ' · proveedor de equipo original' : ''}
           </p>
         </div>
         <div>
           <dt className="label-caps text-[10px] text-muted">Calificación honesta</dt>
-          <dd className="mt-1 flex items-baseline gap-2">
-            <span className="tabular font-display text-4xl font-bold">{p.rating_adjusted.toFixed(2)}</span>
-            <span className="text-sm text-muted">de {p.rating.toFixed(1)}★ crudo</span>
-          </dd>
-          <p className="mt-1 text-xs text-muted">Al menos {Math.round(p.satisfaction * 100)}% de clientes satisfechos (límite de Wilson, 95%).</p>
+          {p.reviews ? (
+            <>
+              <dd className="mt-1 flex items-baseline gap-2">
+                <span className="tabular font-display text-4xl font-bold">{p.rating_adjusted.toFixed(2)}</span>
+                <span className="text-sm text-muted">de {p.rating.toFixed(1)}★ crudo</span>
+              </dd>
+              <p className="mt-1 text-xs text-muted">Al menos {Math.round(p.satisfaction * 100)}% de clientes satisfechos (límite de Wilson, 95%).</p>
+            </>
+          ) : (
+            <>
+              <dd className="mt-1 font-display text-3xl font-bold">Sin reseñas aún</dd>
+              <p className="mt-1 text-xs text-muted">
+                No inventamos estrellas: con la primera opinión parte del promedio del catálogo ({p.rating_adjusted.toFixed(2)}★) y se mueve con cada reseña.
+              </p>
+            </>
+          )}
         </div>
         <div>
           <dt className="label-caps text-[10px] text-muted">Precio justo</dt>
@@ -369,11 +380,7 @@ export function ProductPage({ id }: { id: string }) {
       {d.vehicles.length > 0 && (
         <section className="mt-12">
           <h2 className="font-display text-2xl font-bold uppercase">Vehículos compatibles</h2>
-          <p className="mt-1 text-sm text-muted">
-            {p.fit.startsWith('e:')
-              ? `Se monta en el motor ${p.fit.slice(2)}, que comparten ${d.vehicles.length} generaciones de vehículos.`
-              : 'Específica para esta generación de carrocería.'}
-          </p>
+          <p className="mt-1 text-sm text-muted">{d.fitment_summary}</p>
           <div className="mt-3 overflow-x-auto rounded-lg border border-line bg-surface">
             <table className="w-full min-w-[560px] text-sm">
               <thead className="bg-surface-2 text-left">
@@ -421,7 +428,7 @@ export function ProductPage({ id }: { id: string }) {
               <li key={r.id} className="flex">
                 <ProductCard
                   p={r}
-                  fits={!!vehicle && r.fit !== '*'}
+                  fits={!!vehicle && !r.universal}
                   vehicleName={vehicle ? meta.models.find((m) => m.id === vehicle.modelId)?.name : undefined}
                 />
               </li>

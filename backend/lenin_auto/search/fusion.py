@@ -23,10 +23,18 @@ T = TypeVar("T", bound=Hashable)
 
 
 def rrf(rankings: Sequence[tuple[Sequence[T], float]], k: int = 60) -> dict[T, float]:
+    """Cada lista sin elementos repetidos. Suma en el mismo orden que la definición (bit a bit
+    igual), pero lista por lista con diccionarios: sin un paso de Python por elemento y lista."""
     scores: dict[T, float] = {}
     for ranking, weight in rankings:
-        for rank, item in enumerate(ranking, start=1):
-            scores[item] = scores.get(item, 0.0) + weight / (k + rank)
+        adds = dict(zip(ranking, [weight / (k + rank) for rank in range(1, len(ranking) + 1)], strict=True))
+        if not scores:
+            scores = adds  # 0.0 + x == x
+        elif scores.keys() == adds.keys():
+            scores = {item: s + adds[item] for item, s in scores.items()}
+        else:
+            for item, add in adds.items():
+                scores[item] = scores.get(item, 0.0) + add
     return scores
 
 
@@ -44,10 +52,13 @@ def mmr(
     lo = min(relevance[i] for i in pool)
     span = (hi - lo) or 1.0
     rel = {i: (relevance[i] - lo) / span for i in pool}
+    nearest = dict.fromkeys(pool, 0.0)  # máx. similitud con lo ya elegido, actualizado al elegir: O(n·top)
     chosen: list[T] = []
     while pool and len(chosen) < top:
-        best = max(pool, key=lambda d: lam * rel[d] - (1 - lam) * max((similarity(d, s) for s in chosen), default=0.0))
+        best = max(pool, key=lambda d: lam * rel[d] - (1 - lam) * nearest[d])
         chosen.append(best)
         pool.remove(best)
+        for d in pool:
+            nearest[d] = max(nearest[d], similarity(d, best))
     picked = set(chosen)
     return chosen + [i for i in items if i not in picked]

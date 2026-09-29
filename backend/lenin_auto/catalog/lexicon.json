@@ -24,7 +24,7 @@
     "hitachi": ["hitachi"],
     "lac-value": ["lac", "lenin"],
     "fel-pro": ["felpro"],
-    "acdelco": ["ac delco"]
+    "acdelco": ["ac delco"], "kyb": ["kayaba"], "motorcraft": ["motor craft"], "mopar": ["mopar original"]
   },
   "positions": {
     "Delantero": ["delantero", "delantera", "adelante", "frontal", "front", "delanteras", "delanteros"],

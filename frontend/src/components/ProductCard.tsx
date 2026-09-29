@@ -62,7 +62,7 @@ export function ProductCard({ p, fits, marks, vehicleName }: { p: Product; fits:
         <span className="font-mono"> · {p.part_number}</span>
       </p>
       <div className="mt-2 min-h-[1.25rem]">
-        <FitNote fits={fits} universal={p.fit === '*'} vehicleName={vehicleName} />
+        <FitNote fits={fits} universal={p.universal} vehicleName={vehicleName} />
       </div>
       <div className="mt-1">
         <Stars rating={p.rating} reviews={p.reviews} adjusted={p.rating_adjusted} compact />
@@ -105,7 +105,7 @@ export function ProductRow({ p, fits, marks, vehicleName }: { p: Product; fits: 
             .join(' · ')}
         </p>
         <div className="mt-1 flex flex-wrap gap-x-3">
-          <FitNote fits={fits} universal={p.fit === '*'} vehicleName={vehicleName} />
+          <FitNote fits={fits} universal={p.universal} vehicleName={vehicleName} />
           <StockLine p={p} />
         </div>
       </div>

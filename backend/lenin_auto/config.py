@@ -34,6 +34,7 @@ class Settings:
     rate_per_second: float = float(os.environ.get("LENIN_RATE_PER_SECOND", "2"))
     trust_proxy: bool = os.environ.get("LENIN_TRUST_PROXY", "0") == "1"
     database: str = os.environ.get("LENIN_DB", "lenin_auto.sqlite3")
+    inventory: str = os.environ.get("LENIN_INVENTORY", "")  # instantánea JSON de `lenin-auto importar`
     secret: bytes = field(default_factory=_secret, repr=False)
 
 

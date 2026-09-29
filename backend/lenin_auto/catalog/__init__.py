@@ -3,23 +3,31 @@
 Los datos viven en JSON junto a este módulo (se editan sin programar) y se cargan una
 sola vez en estructuras inmutables con índices para consultas O(1).
 
-Compatibilidad: cada producto lleva una sola clave ``fit``
-    ``g:<generación>``   pieza de carrocería o chasis
-    ``e:<motor>``        pieza de motor (sirve en todo modelo que monte ese motor)
-    ``*``                universal
-Un vehículo, completo o parcial, se traduce a un conjunto de claves con ``fit_keys``.
+Compatibilidad: cada producto lleva un conjunto de claves ``fits``, de la más amplia a la
+más precisa, y siempre la representación más compacta de lo que declara el fabricante:
+    ``*``                          universal
+    ``e:<motor>``                  todo vehículo que monte ese motor
+    ``g:<generación>``             toda la generación, cualquier motor
+    ``ge:<generación>:<motor>``    la generación, solo con ese motor
+    ``y:<generación>:<año>``       un año de la generación, cualquier motor
+    ``ye:<generación>:<año>:<motor>``
+Una configuración concreta (generación, año, motor) cubre exactamente sus cinco claves; un
+vehículo parcial se traduce con ``fit_keys`` a la unión de las claves de todas las
+configuraciones que admite. Una pieza le sirve si comparte al menos una clave.
 """
 
 from __future__ import annotations
 
 import json
 from collections import defaultdict
+from collections.abc import Iterator
 from dataclasses import dataclass
 from functools import cached_property, lru_cache
 from importlib import resources
 from typing import Any, Literal
 
 Tier = Literal["economico", "diario", "desempeno", "oem"]
+UNIVERSAL = "*"
 Fuel = Literal["Gasolina", "Diésel", "Híbrido"]
 TIER_ORDER: tuple[Tier, ...] = ("economico", "diario", "desempeno", "oem")
 
@@ -149,6 +157,40 @@ class VehicleQuery:
         return bool(self.make_id and self.model_id and self.year)
 
 
+def gen_key(gen_id: str) -> str:
+    return f"g:{gen_id}"
+
+
+def engine_key(code: str) -> str:
+    return f"e:{code}"
+
+
+def gen_engine_key(gen_id: str, code: str) -> str:
+    return f"ge:{gen_id}:{code}"
+
+
+def year_key(gen_id: str, year: int) -> str:
+    return f"y:{gen_id}:{year}"
+
+
+def year_engine_key(gen_id: str, year: int, code: str) -> str:
+    return f"ye:{gen_id}:{year}:{code}"
+
+
+@dataclass(frozen=True, slots=True)
+class Config:
+    """Un vehículo exacto: generación, año y motor."""
+
+    gen: Generation
+    year: int
+    engine: str
+
+    @property
+    def keys(self) -> tuple[str, str, str, str, str]:
+        g, y, e = self.gen.id, self.year, self.engine
+        return gen_key(g), engine_key(e), gen_engine_key(g, e), year_key(g, y), year_engine_key(g, y, e)
+
+
 def _load(name: str) -> Any:
     return json.loads(resources.files(__package__).joinpath(name).read_text(encoding="utf-8"))
 
@@ -230,6 +272,13 @@ class Catalog:
             for e in g.engines:
                 gens_by_engine[e].append(g)
         self.gens_by_engine = {k: tuple(v) for k, v in gens_by_engine.items()}
+        self._fit_cache: dict[VehicleQuery, frozenset[str]] = {}
+
+    def add_brands(self, brands: list[Brand] | tuple[Brand, ...]) -> None:
+        """Registra marcas que trae un inventario importado (las ya conocidas se ignoran)."""
+        new = [b for b in brands if b.id not in self.brand_by_id]
+        self.brands = (*self.brands, *new)
+        self.brand_by_id.update((b.id, b) for b in new)
 
     # ---- navegación del árbol Marca → Año → Modelo → Motor -------------------------------
 
@@ -256,15 +305,15 @@ class Catalog:
 
     # ---- compatibilidad ---------------------------------------------------------------------
 
-    def fit_keys(self, v: VehicleQuery) -> frozenset[str]:
-        """Claves de compatibilidad que cubre un vehículo (completo o parcial)."""
+    def configs(self, v: VehicleQuery) -> tuple[Config, ...]:
+        """Configuraciones (generación, año, motor) que admite un vehículo completo o parcial."""
         if v.model_id:
             models: tuple[Model, ...] = tuple(m for m in (self.model_by_id.get(v.model_id),) if m)
         elif v.make_id:
             models = self.models_of(v.make_id)
         else:
             models = self.models
-        keys: set[str] = set()
+        out: list[Config] = []
         for m in models:
             for g in m.gens:
                 if v.year and not g.covers(v.year):
@@ -272,11 +321,45 @@ class Catalog:
                 engines = [e for e in g.engines if (not v.engine or e == v.engine)]
                 if v.fuel:
                     engines = [e for e in engines if self.engines[e].fuel == v.fuel]
-                if not engines:
-                    continue
-                keys.add(f"g:{g.id}")
-                keys.update(f"e:{e}" for e in engines)
-        return frozenset(keys)
+                years = (v.year,) if v.year else range(g.start, g.end + 1)
+                out.extend(Config(g, y, e) for y in years for e in engines)
+        return tuple(out)
+
+    def fit_keys(self, v: VehicleQuery) -> frozenset[str]:
+        """Claves de compatibilidad que cubre un vehículo (completo o parcial). Memorizado."""
+        keys = self._fit_cache.get(v)
+        if keys is None:
+            keys = frozenset(k for cfg in self.configs(v) for k in cfg.keys)
+            if len(self._fit_cache) >= 4096:  # la consulta la elige el cliente: memoria acotada
+                self._fit_cache.clear()
+            self._fit_cache[v] = keys
+        return keys
+
+    def configs_of_key(self, key: str) -> Iterator[Config]:
+        """Configuraciones que cubre una clave (las que ya no existen en el catálogo se omiten)."""
+        kind, _, rest = key.partition(":")
+        gen = engine = None
+        year = 0
+        if kind == "g":
+            gen = self.gen_by_id.get(rest)
+        elif kind == "e":
+            for g in self.gens_by_engine.get(rest, ()):
+                yield from (Config(g, y, rest) for y in range(g.start, g.end + 1))
+            return
+        elif kind == "ge":
+            gid, _, engine = rest.partition(":")
+            gen = self.gen_by_id.get(gid)
+        elif kind == "y":
+            gid, _, y = rest.rpartition(":")
+            gen, year = self.gen_by_id.get(gid), int(y)
+        elif kind == "ye":
+            gid, y, engine = rest.split(":", 2)
+            gen, year = self.gen_by_id.get(gid), int(y)
+        if gen is None or (engine is not None and engine not in gen.engines):
+            return
+        years = [year] if year else range(gen.start, gen.end + 1)
+        engines = [engine] if engine else gen.engines
+        yield from (Config(gen, y, e) for y in years if gen.covers(y) for e in engines)
 
     def vehicle_label(self, v: VehicleQuery, engine: bool = True) -> str:
         make = self.make_by_id[v.make_id].name if v.make_id in self.make_by_id else ""

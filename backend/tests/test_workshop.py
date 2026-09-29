@@ -56,7 +56,7 @@ def test_plan_compatible_y_cantidades(store: Store) -> None:
     assert next(line for line in plan.lines if line.task.part_type == "bujia").qty == 4
     for line in plan.lines:
         for p in line.picks.values():
-            assert p.fit in ("*", "g:toyota-corolla-e170", "e:2ZR-FE")
+            assert p.fits <= {"*", "g:toyota-corolla-e170", "e:2ZR-FE"}
 
 
 def test_diesel_usa_15w40_y_no_lleva_bujias(store: Store) -> None:

@@ -5,6 +5,7 @@ cada caso de uso como un método. La API (``api.py``) y la CLI (``cli.py``) solo
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 from datetime import UTC, datetime
 from functools import cached_property, lru_cache
 
@@ -140,7 +141,7 @@ class Store:
             reviews=p.reviews,
             rating_adjusted=round(self.ratings.adjusted(p.rating, p.reviews), 2),
             satisfaction=round(self.ratings.satisfaction(p.rating, p.reviews), 3),
-            fit=p.fit,
+            universal=p.universal,
             oem=list(p.oem),
             xref=list(p.xref),
             specs=list(p.specs),
@@ -257,8 +258,9 @@ class Store:
     @cached_property
     def stats(self) -> StatsOut:
         return StatsOut(
+            demo=not settings.inventory,
             products=len(self.inventory),
-            brands=len(self.catalog.brands),
+            brands=len({p.brand_id for p in self.inventory}),
             vehicles=self.catalog.vehicle_config_count,
             part_types=len(self.catalog.part_types),
             build_ms=self.build_ms,
@@ -295,6 +297,23 @@ class Store:
             took_ms=r.took_ms,
         )
 
+    @staticmethod
+    def fitment_summary(p: Product, rows: list[dict[str, object]]) -> str:
+        if p.universal:
+            return "Pieza universal: se elige por especificación, no por vehículo."
+        kinds = {k.split(":", 1)[0] for k in p.fits}
+        if kinds == {"e"}:
+            codes = " / ".join(sorted(k[2:] for k in p.fits))
+            return f"Se monta en el motor {codes}, que comparten {len(rows)} generaciones de vehículos."
+        if kinds == {"g"}:
+            n = len(p.fits)
+            return (
+                "Específica para esta generación de carrocería."
+                if n == 1
+                else f"Sirve en {n} generaciones de carrocería."
+            )
+        return "Aplicación exacta declarada por el fabricante: solo los años y motores de esta tabla."
+
     def product_detail(self, product_id: str, vehicle: VehicleQuery | None) -> ProductDetailOut | None:
         p = self.inventory.by_id.get(product_id)
         if p is None:
@@ -302,10 +321,10 @@ class Store:
         c = self.catalog
         fit = assess(p, vehicle, c)
         alternatives = sorted(self.inventory.groups[p.group_key], key=lambda x: (TIER_ORDER.index(x.tier), x.price))
-        keys = c.fit_keys(vehicle) if vehicle and not vehicle.empty else frozenset({p.fit})
+        keys = c.fit_keys(vehicle) if vehicle and not vehicle.empty else p.fits
         related: list[Product] = []
         for pt in c.part_type_by_id[p.part_type_id].related:
-            pool = [x for x in self.inventory.by_type.get(pt, ()) if x.fit == "*" or x.fit in keys or x.fit == p.fit]
+            pool = [x for x in self.inventory.by_type.get(pt, ()) if x.fits_any(keys)]
             related += sorted(pool, key=lambda x: -self.values.value(x))[:2]
         cert = None
         if vehicle and fit.status == "confirmada":
@@ -318,10 +337,12 @@ class Store:
                 issued=str(issued.payload["iat"]),
             )
         t = self.brand_trust[p.brand_id]
+        rows = self.inventory.fitment_rows(p)
         return ProductDetailOut(
             product=self.product_out(p),
             fitment=FitmentOut(status=fit.status, confidence=fit.confidence, reason=fit.reason),
-            vehicles=[FitRow(**row) for row in self.inventory.fitment_rows(p)],  # type: ignore[arg-type]
+            vehicles=[FitRow(**row) for row in rows],  # type: ignore[arg-type]
+            fitment_summary=self.fitment_summary(p, rows),
             alternatives=[self.product_out(x) for x in alternatives],
             related=[self.product_out(x) for x in related[:4]],
             brand_trust=BrandTrustOut(
@@ -572,18 +593,21 @@ class Store:
         ]
         groups = [
             g
-            for k, g in self.inventory.groups.items()
-            if k.split("|")[1] == "pastillas-freno"
-            and k.split("|")[2] == "Delantero"
-            and (keys is None or g[0].fit in keys)
+            for g in self.inventory.groups.values()
+            if g[0].part_type_id == "pastillas-freno"
+            and g[0].position == "Delantero"
+            and (keys is None or g[0].fits_any(keys))
         ]
         full = [g for g in groups if len({p.tier for p in g}) == 4]
-        pick = next((g for f in popular for g in full if g[0].fit == f), None) if keys is None else None
+        pick = next((g for f in popular for g in full if f in g[0].fits), None) if keys is None else None
         group = pick or (full[0] if full else max(groups, key=lambda g: len({p.tier for p in g}), default=[]))
         title = ""
         if group:
-            row = self.inventory.fitment_rows(group[0])[0]
-            title = f"Pastillas de freno delanteras · {row['model']} {row['years'][0]}–{row['years'][1]}"  # type: ignore[index]
+            rows = self.inventory.fitment_rows(group[0])
+            title = "Pastillas de freno delanteras"
+            if rows:
+                years: list[int] = rows[0]["years"]  # type: ignore[assignment]
+                title += f" · {rows[0]['model']} {years[0]}–{years[1]}"
         showcase: dict[str, ProductOut | None] = {
             t: (
                 self.product_out(min((p for p in group if p.tier == t), key=lambda p: p.price))
@@ -592,10 +616,36 @@ class Store:
             )
             for t in TIER_ORDER
         }
+        # Ejemplos de búsqueda por número: los de la demostración o, con un inventario importado,
+        # los primeros que existan
         inv = self.inventory.products
-        bosch = next(p for p in inv if p.brand_id == "bosch" and p.part_type_id == "pastillas-freno")
-        oem = next(p for p in inv if p.fit == "g:toyota-hilux-an120" and p.part_type_id == "amortiguador" and p.oem)
-        xref = next(p for p in inv if p.xref and p.part_type_id == "filtro-aceite")
+
+        def first(*preds: Callable[[Product], bool]) -> Product | None:
+            return next((p for pred in preds for p in inv if pred(p)), None)
+
+        spaced = first(
+            lambda p: p.brand_id == "bosch" and p.part_type_id == "pastillas-freno", lambda p: " " in p.part_number
+        )
+        oem = first(
+            lambda p: "g:toyota-hilux-an120" in p.fits and p.part_type_id == "amortiguador" and bool(p.oem),
+            lambda p: bool(p.oem) and not p.universal,
+        )
+        xref = first(lambda p: bool(p.xref) and p.part_type_id == "filtro-aceite", lambda p: bool(p.xref))
+        samples: list[dict[str, str]] = []
+        if spaced:
+            samples.append(
+                {
+                    "label": c.brand_by_id[spaced.brand_id].name,
+                    "value": spaced.part_number.replace(" ", "").lower(),
+                    "note": "sin espacios, en minúsculas",
+                }
+            )
+        if oem:
+            rows = self.inventory.fitment_rows(oem)
+            label = f"OEM {rows[0]['make']}" if rows else "Número OEM"
+            samples.append({"label": label, "value": oem.oem[0], "note": "devuelve todas las equivalentes"})
+        if xref:
+            samples.append({"label": "Referencia cruzada", "value": xref.xref[0], "note": "número de otra marca"})
         return HomeOut(
             stats=self.stats,
             category_counts={f.value: f.count for f in counts},
@@ -603,15 +653,7 @@ class Store:
             deals_total=deals.total,
             tier_showcase_title=title,
             tier_showcase=showcase,
-            part_number_samples=[
-                {
-                    "label": "Bosch",
-                    "value": bosch.part_number.replace(" ", "").lower(),
-                    "note": "sin espacios, en minúsculas",
-                },
-                {"label": "OEM Toyota", "value": oem.oem[0], "note": "devuelve todas las equivalentes"},
-                {"label": "Referencia cruzada", "value": xref.xref[0], "note": "número de otra marca"},
-            ],
+            part_number_samples=samples,
             service=self.service_plan(vehicle) if vehicle and vehicle.complete else None,
         )
 

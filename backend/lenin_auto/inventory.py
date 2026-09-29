@@ -5,25 +5,33 @@ plan de niveles al estilo RockAuto —económico, uso diario, a veces alto desem
 original— y se eligen marcas que realmente fabrican esa pieza. El número OEM es común al
 grupo: por eso buscar un OEM devuelve todas las equivalentes.
 
-En producción este módulo se reemplaza por el feed real (ERP, ACES/PIES, TecDoc)
-manteniendo la clase ``Product``.
+El inventario real llega por ``importer.py`` (CSV de tu ERP o proveedor) como una
+instantánea JSON; con ``LENIN_INVENTORY`` apuntando a ella, la tienda la usa en lugar de la
+demostración, con los mismos índices, modelos y garantías.
 """
 
 from __future__ import annotations
 
+import json
 import math
-from collections.abc import Callable, Iterator
+import re
+from collections import defaultdict
+from collections.abc import Callable, Iterable, Iterator
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from functools import cached_property, lru_cache
-from typing import TypeVar
+from pathlib import Path
+from typing import Any, TypeVar
 
-from .catalog import Brand, Catalog, Generation, PartType, Tier, load_catalog
+from .catalog import TIER_ORDER, UNIVERSAL, Brand, Catalog, Generation, PartType, Tier, load_catalog
+from .config import settings
 from .search.text import norm_pn
 
 Rng = Callable[[], float]
 T = TypeVar("T")
 _LETTERS = "ABCDEFGHJKLMNPRSTUVWXYZ"
 _MASK = 0xFFFFFFFF
+_WARRANTY = re.compile(r"\s*(\d+(?:[.,]\d+)?)\s*(mes|month)?")
 
 
 def fnv1a(text: str) -> int:
@@ -62,6 +70,10 @@ def _price(p: float, r: Rng) -> float:
     return max(2.99, math.floor(p) + (0.99 if r() < 0.55 else 0.49))
 
 
+def popularity(rating: float, reviews: int, in_stock: bool, tier: str) -> int:
+    return round(reviews * (rating / 5) + (40 if in_stock else 0) + (25 if tier == "diario" else 0))
+
+
 @dataclass(slots=True)
 class Product:
     i: int
@@ -81,7 +93,7 @@ class Product:
     stock: tuple[int, ...]
     rating: float
     reviews: int
-    fit: str
+    fits: frozenset[str]
     oem: tuple[str, ...]
     xref: tuple[str, ...]
     specs: tuple[tuple[str, str], ...]
@@ -105,13 +117,34 @@ class Product:
         return round((1 - self.price / self.list_price) * 100) if self.list_price else 0
 
     @property
-    def group_key(self) -> str:
-        """Opciones intercambiables: mismo vehículo, tipo, posición y variante."""
-        return f"{self.fit}|{self.part_type_id}|{self.position or ''}|{self.variant or ''}"
+    def universal(self) -> bool:
+        return UNIVERSAL in self.fits
+
+    def fits_any(self, keys: frozenset[str]) -> bool:
+        """¿Sirve en alguna de las configuraciones de un vehículo? (``Catalog.fit_keys``)."""
+        return UNIVERSAL in self.fits or not keys.isdisjoint(self.fits)
 
     @property
-    def warranty_years(self) -> int:
-        return int(self.warranty.split()[0]) if self.warranty[:1].isdigit() else 1
+    def fit_id(self) -> str:
+        """Forma canónica de la compatibilidad (claves ordenadas)."""
+        return "+".join(sorted(self.fits))
+
+    @property
+    def group_key(self) -> str:
+        """Opciones intercambiables: misma compatibilidad, tipo, posición y variante."""
+        return f"{self.fit_id}|{self.part_type_id}|{self.position or ''}|{self.variant or ''}"
+
+    @property
+    def warranty_years(self) -> float:
+        """«2 años» → 2 · «18 meses» → 1.5 · «de por vida» → 10."""
+        w = self.warranty.lower()
+        if "vida" in w or "lifetime" in w:
+            return 10.0
+        m = _WARRANTY.match(w)
+        if not m:
+            return 1.0
+        n = float(m.group(1).replace(",", "."))
+        return n / 12 if m.group(2) else n
 
 
 @dataclass(frozen=True, slots=True)
@@ -253,6 +286,8 @@ class InventoryBuilder:
                 stock = tuple(1 + int(r() * r() * 48) if r() < 0.56 else 0 for _ in c.warehouses)
                 rating = min(5.0, round((3.5 + r() * 1.5 - (0.25 if tier == "economico" else 0)) * 10) / 10)
                 reviews = int(r() ** 2.2 * 900) + (12 if tier == "diario" else 0)
+                if not reviews:
+                    rating = 0.0  # sin reseñas no hay calificación que mostrar (los modelos ya la ignoran)
                 specs: list[tuple[str, str]] = [(s.k, _pick(s.v, r)) for s in pt.specs]
                 if grp.variant:
                     specs.insert(0, ("Especificación", grp.variant))
@@ -285,14 +320,12 @@ class InventoryBuilder:
                         stock=stock,
                         rating=rating,
                         reviews=reviews,
-                        fit=grp.fit,
+                        fits=frozenset({grp.fit}),
                         oem=tuple(oem),
                         xref=xref,
                         specs=tuple(specs),
                         warranty=t.warranty,
-                        popularity=round(
-                            reviews * (rating / 5) + (40 if any(stock) else 0) + (25 if tier == "diario" else 0)
-                        ),
+                        popularity=popularity(rating, reviews, any(stock), tier),
                     )
                 )
         return products
@@ -325,27 +358,153 @@ class Inventory:
         return out
 
     def fitment_rows(self, p: Product) -> list[dict[str, object]]:
-        """Vehículos donde entra una pieza (derivado de su clave de compatibilidad)."""
+        """Vehículos donde entra una pieza: una fila por generación y tramo de años con los
+        mismos motores, reconstruida exactamente desde sus claves de compatibilidad."""
         c = self.catalog
-        if p.fit == "*":
+        if p.universal:
             return []
-        kind, key = p.fit[0], p.fit[2:]
-        gens = [c.gen_by_id[key]] if kind == "g" else list(c.gens_by_engine.get(key, ()))
-        return [
-            {
-                "make_id": c.model_by_id[g.model_id].make_id,
-                "make": c.make_by_id[c.model_by_id[g.model_id].make_id].name,
-                "model_id": g.model_id,
-                "model": c.model_by_id[g.model_id].name,
-                "generation": g.code,
-                "years": [g.start, g.end],
-                "engines": [c.engines[e].label() for e in ([key] if kind == "e" else g.engines)],
-            }
-            for g in gens
-        ]
+        by_gen: dict[str, dict[int, set[str]]] = defaultdict(lambda: defaultdict(set))
+        for key in p.fits:
+            for cfg in c.configs_of_key(key):
+                by_gen[cfg.gen.id][cfg.year].add(cfg.engine)
+        rows: list[dict[str, object]] = []
+        for gen_id, years in by_gen.items():
+            g = c.gen_by_id[gen_id]
+            m = c.model_by_id[g.model_id]
+            run: list[int] = []
+            for y in sorted(years):
+                if run and (y != run[-1] + 1 or years[y] != years[run[0]]):
+                    rows.append(self._row(m.make_id, m.id, g, run, years[run[0]]))
+                    run = []
+                run.append(y)
+            rows.append(self._row(m.make_id, m.id, g, run, years[run[0]]))
+        return sorted(rows, key=lambda r: (str(r["make"]), str(r["model"]), r["years"]))
+
+    def _row(
+        self, make_id: str, model_id: str, g: Generation, years: list[int], engines: set[str]
+    ) -> dict[str, object]:
+        c = self.catalog
+        return {
+            "make_id": make_id,
+            "make": c.make_by_id[make_id].name,
+            "model_id": model_id,
+            "model": c.model_by_id[model_id].name,
+            "generation": g.code,
+            "years": [years[0], years[-1]],
+            "engines": [c.engines[e].label() for e in g.engines if e in engines],
+        }
+
+
+# ---------------------------------------------------------------------- instantáneas JSON
+
+SNAPSHOT_FORMAT = "lenin-auto/inventario@1"
+
+
+def brand_record(b: Brand) -> dict[str, Any]:
+    return {
+        "id": b.id,
+        "name": b.name,
+        "origin": b.origin,
+        "tiers": list(b.tiers),
+        "cats": list(b.cats),
+        "types": list(b.types),
+        "oem_makes": list(b.oem_makes),
+        "pn": b.pn,
+    }
+
+
+def brand_from_record(b: dict[str, Any]) -> Brand:
+    return Brand(
+        b["id"],
+        b["name"],
+        b["origin"],
+        tuple(b["tiers"]),
+        tuple(b["cats"]),
+        tuple(b["types"]),
+        tuple(b["oem_makes"]),
+        b["pn"],
+    )
+
+
+def product_record(p: Product) -> dict[str, Any]:
+    return {
+        "part_number": p.part_number,
+        "brand_id": p.brand_id,
+        "part_type_id": p.part_type_id,
+        "tier": p.tier,
+        "position": p.position,
+        "variant": p.variant,
+        "title": p.title,
+        "price": p.price,
+        "list_price": p.list_price,
+        "closeout": p.closeout,
+        "stock": list(p.stock),
+        "rating": p.rating,
+        "reviews": p.reviews,
+        "fits": sorted(p.fits),
+        "oem": list(p.oem),
+        "xref": list(p.xref),
+        "specs": [list(kv) for kv in p.specs],
+        "warranty": p.warranty,
+    }
+
+
+def make_product(i: int, rec: dict[str, Any], catalog: Catalog) -> Product:
+    """Arma un ``Product`` desde un registro, derivando los campos calculados."""
+    pt = catalog.part_type_by_id[rec["part_type_id"]]
+    if rec["tier"] not in TIER_ORDER:
+        raise ValueError(f"nivel desconocido: {rec['tier']}")
+    stock = tuple(int(x) for x in rec["stock"])
+    key = norm_pn(rec["part_number"])
+    return Product(
+        i=i,
+        id=f"{rec['brand_id']}-{key.lower()}",
+        part_number=rec["part_number"],
+        pn_key=key,
+        brand_id=rec["brand_id"],
+        part_type_id=pt.id,
+        cat_id=pt.cat,
+        tier=rec["tier"],
+        position=rec["position"],
+        variant=rec["variant"],
+        title=rec["title"],
+        price=float(rec["price"]),
+        list_price=float(rec["list_price"]) if rec["list_price"] else None,
+        closeout=bool(rec["closeout"]),
+        stock=stock,
+        rating=float(rec["rating"]),
+        reviews=int(rec["reviews"]),
+        fits=frozenset(rec["fits"]),
+        oem=tuple(rec["oem"]),
+        xref=tuple(rec["xref"]),
+        specs=tuple((str(k), str(v)) for k, v in rec["specs"]),
+        warranty=rec["warranty"],
+        popularity=popularity(float(rec["rating"]), int(rec["reviews"]), any(stock), rec["tier"]),
+    )
+
+
+def save_snapshot(path: str | Path, products: Iterable[Product], brands: Iterable[Brand], source: str = "") -> None:
+    data = {
+        "format": SNAPSHOT_FORMAT,
+        "created_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        "source": source,
+        "brands": [brand_record(b) for b in brands],
+        "products": [product_record(p) for p in products],
+    }
+    Path(path).write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
+
+def load_snapshot(path: str | Path, catalog: Catalog) -> list[Product]:
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    if data.get("format") != SNAPSHOT_FORMAT:
+        raise ValueError(f"{path}: no es una instantánea de inventario ({SNAPSHOT_FORMAT})")
+    catalog.add_brands([brand_from_record(b) for b in data["brands"]])
+    return [make_product(i, rec, catalog) for i, rec in enumerate(data["products"])]
 
 
 @lru_cache(maxsize=1)
 def load_inventory() -> Inventory:
+    """El inventario importado (``LENIN_INVENTORY``) o, sin él, el de demostración."""
     catalog = load_catalog()
-    return Inventory(InventoryBuilder(catalog).build(), catalog)
+    products = load_snapshot(settings.inventory, catalog) if settings.inventory else InventoryBuilder(catalog).build()
+    return Inventory(products, catalog)

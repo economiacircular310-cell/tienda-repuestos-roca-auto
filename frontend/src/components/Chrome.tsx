@@ -39,6 +39,7 @@ const FIELDS = [
 /** Paso de compra: datos del cliente y certificación opcional para el vehículo del garaje. */
 function Checkout({ quote, onBack }: { quote: Cart; onBack: () => void }) {
   useStore(garage);
+  const demo = useMeta()?.stats.demo ?? false;
   const vehicle = activeVehicle();
   const [form, setForm] = useState({ name: '', email: '', phone: '', city: '' });
   const [certify, setCertify] = useState(!!vehicle);
@@ -134,7 +135,7 @@ function Checkout({ quote, onBack }: { quote: Cart; onBack: () => void }) {
         >
           {busy && <Loader2 size={18} className="animate-spin" />} Confirmar pedido
         </button>
-        <p className="text-center text-xs text-muted">Te contactamos para coordinar el pago. Catálogo de demostración: no se cobra nada.</p>
+        <p className="text-center text-xs text-muted">Te contactamos para coordinar el pago.{demo && ' Catálogo de demostración: no se cobra nada.'}</p>
       </div>
     </form>
   );
@@ -413,8 +414,9 @@ export function Footer() {
       </div>
       <div className="border-t border-line">
         <p className="mx-auto max-w-[1400px] px-4 py-5 text-xs text-muted sm:px-6">
-          © {new Date().getFullYear()} {store.name}. Motor en Python · {meta.stats.products.toLocaleString(store.locale)} referencias. Catálogo de demostración:
-          precios, existencias y números de parte son ficticios. Las marcas mencionadas pertenecen a sus dueños.
+          © {new Date().getFullYear()} {store.name}. Motor en Python · {meta.stats.products.toLocaleString(store.locale)} referencias.
+          {meta.stats.demo && ' Catálogo de demostración: precios, existencias y números de parte son ficticios.'} Las marcas mencionadas pertenecen a sus
+          dueños.
         </p>
       </div>
     </footer>

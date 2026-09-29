@@ -46,12 +46,12 @@ def test_quitar_chip(store: Store) -> None:
 def test_compatibilidad_por_consulta(store: Store) -> None:
     r = q(store, "pastillas delanteras corolla 2016", size=100)
     assert r.total > 1 and r.vehicle_source == "query"
-    assert all(h.product.fit == "g:toyota-corolla-e170" and h.product.position == "Delantero" for h in r.hits)
+    assert all(h.product.fits == {"g:toyota-corolla-e170"} and h.product.position == "Delantero" for h in r.hits)
 
 
 def test_compatibilidad_por_garaje(store: Store) -> None:
     r = q(store, "filtro de aceite", vehicle=VehicleQuery("nissan", "nissan-versa", 2018, "HR16DE"))
-    assert r.total > 0 and all(h.product.fit == "e:HR16DE" for h in r.hits)
+    assert r.total > 0 and all(h.product.fits == {"e:HR16DE"} for h in r.hits)
     assert r.vehicle_source == "garage" and r.hidden_by_fitment > 100
 
 
@@ -62,7 +62,7 @@ def test_numero_de_parte_en_cualquier_formato(store: Store) -> None:
 
 
 def test_oem_devuelve_equivalentes(store: Store) -> None:
-    p = next(x for x in store.inventory if x.oem and x.fit.startswith("g:"))
+    p = next(x for x in store.inventory if x.oem and x.fit_id.startswith("g:"))
     r = q(store, p.oem[0], size=50)
     equivalents = [x for x in store.inventory if p.oem[0] in x.oem]
     assert r.pn_match and r.pn_match[0] == "oem" and r.total == len(equivalents) > 1

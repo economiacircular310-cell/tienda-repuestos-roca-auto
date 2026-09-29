@@ -131,7 +131,7 @@ class Planner:
             cands = [
                 p
                 for p in self.inv.by_type.get(task.part_type, ())
-                if (p.fit == "*" or p.fit in keys)
+                if p.fits_any(keys)
                 and (task.position is None or p.position == task.position)
                 and (variant is None or p.variant == variant)
             ]

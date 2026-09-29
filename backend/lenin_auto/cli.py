@@ -7,6 +7,8 @@
     python -m lenin_auto vin 2T1BURHE3GC741258 --en-linea
     python -m lenin_auto pieza bosch-0986602017 --vehiculo toyota-corolla:2010
     python -m lenin_auto verificar <token>
+    python -m lenin_auto importar inventario.csv --salida inventario.json --reporte problemas.csv
+    python -m lenin_auto exportar plantilla.csv -n 50
     python -m lenin_auto stats
     python -m lenin_auto servir --puerto 8000
 
@@ -224,6 +226,64 @@ def cmd_pedidos(a: argparse.Namespace) -> None:
     print(green(f"  {order.code} → {order.status}"))
 
 
+def cmd_importar(a: argparse.Namespace) -> None:
+    from .importer import ImportFailed, import_file
+
+    try:
+        rep = import_file(a.archivo)
+    except (ImportFailed, OSError) as e:
+        raise SystemExit(red(f"  {e}")) from e
+    if a.salida and rep.products:
+        rep.save(a.salida)
+    if a.reporte:
+        with open(a.reporte, "w", encoding="utf-8-sig", newline="") as f:
+            rep.issues_csv(f)
+    s = rep.summary()
+    if a.json:
+        print(json.dumps(s, ensure_ascii=False, indent=2))
+        return
+    print(bold(f"\n  Importación de {s['source']}") + dim(f"  ·  {s['encoding']}, separador «{s['delimiter']}»"))
+    print(f"  {s['rows']:>7,} filas leídas")
+    print(green(f"  {s['imported']:>7,} piezas listas") + dim(f"  ({s['universal']:,} universales)"))
+    if s["skipped_rows"]:
+        print(red(f"  {s['skipped_rows']:>7,} filas omitidas por errores"))
+    if s["new_brands"]:
+        print(f"  {len(s['new_brands']):>7} marcas nuevas: {', '.join(s['new_brands'][:8])}")
+    print(dim("\n  Columnas: " + " · ".join(f"{h} → {f}" for f, h in s["columns"].items())))
+    if s["ignored_columns"]:
+        print(dim(f"  Ignoradas: {', '.join(s['ignored_columns'])}"))
+    for level, title in (("error", "Errores"), ("aviso", "Avisos")):
+        items = [i for i in rep.issues if i.level == level]
+        if not items:
+            continue
+        paint = red if level == "error" else yellow
+        print(paint(f"\n  {title} ({len(items):,})"))
+        if level == "error":
+            for i in items[:12]:
+                value = dim(f"  «{i.value[:40]}»") if i.value else ""
+                print(f"    fila {i.row:<6} {i.column[:16]:<16} {i.message}{value}")
+            if len(items) > 12:
+                print(dim(f"    … y {len(items) - 12:,} más en el reporte"))
+        else:
+            for t in [t for t in s["top_issues"] if t["level"] == "aviso"][:8]:
+                print(f"    × {t['count']:<6,} {t['column'][:16]:<16} {t['message']}")
+    if a.salida and rep.products:
+        print(green(f"\n  Instantánea escrita en {a.salida}"))
+        print(dim(f"  Úsala con:  LENIN_INVENTORY={a.salida} lenin-auto servir"))
+    elif not a.salida:
+        print(dim("\n  Solo validación. Agrega --salida inventario.json para generar la instantánea."))
+    print(dim(f"  {s['took_ms']:,.0f} ms\n"))
+
+
+def cmd_exportar(a: argparse.Namespace) -> None:
+    from .importer import export_csv
+    from .inventory import load_inventory
+
+    with open(a.archivo, "w", encoding="utf-8-sig", newline="") as f:
+        n = export_csv(load_inventory(), f, a.n, a.separador)
+    print(green(f"  {n:,} piezas exportadas a {a.archivo}") + dim(" (se pueden volver a importar tal cual)"))
+
+
 def cmd_stats(a: argparse.Namespace) -> None:
     from .store import get_store
 
@@ -289,6 +349,16 @@ def main(argv: Sequence[str] | None = None) -> None:
     pa.add_argument("codigo")
     pa.add_argument("estado", choices=["preparando", "enviado", "entregado", "cancelado"])
     pa.add_argument("--nota")
+
+    p = add("importar", cmd_importar, "importa tu inventario desde CSV con reporte por fila")
+    p.add_argument("archivo")
+    p.add_argument("--salida", help="instantánea JSON a generar (sin esto solo valida)")
+    p.add_argument("--reporte", help="CSV con cada error y aviso por fila")
+
+    p = add("exportar", cmd_exportar, "exporta el inventario a CSV (sirve de plantilla)")
+    p.add_argument("archivo")
+    p.add_argument("-n", type=int, help="solo las primeras N piezas")
+    p.add_argument("--separador", default=",", help="«;» para Excel en español")
 
     add("stats", cmd_stats, "tamaño del catálogo y rendimiento")
 

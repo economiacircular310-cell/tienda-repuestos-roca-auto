@@ -38,6 +38,7 @@ export function BestValue({ className = '' }: { className?: string }) {
 
 export function Stars({ rating, reviews, adjusted, compact = false }: { rating: number; reviews?: number; adjusted?: number; compact?: boolean }) {
   const size = compact ? 11 : 13;
+  if (reviews === 0) return <span className="text-xs text-muted">Sin reseñas aún</span>;
   return (
     <span
       className="inline-flex items-center gap-1 text-xs text-muted"

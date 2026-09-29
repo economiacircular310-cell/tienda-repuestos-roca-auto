@@ -8,7 +8,8 @@ Tubería de una consulta:
                             └─► texto libre ──► BM25F con variantes por palabra:
                                                   exacta 1.0 · prefijo 0.8 (última palabra)
                                                   SymSpell 0.7/0.5 · fonética española 0.75
-    candidatos ─► filtros + facetas disyuntivas (máscara de bits, una pasada)
+    candidatos ─► filtros + facetas disyuntivas: álgebra de conjuntos de bits (un entero de
+                  Python con un bit por producto; AND/OR/popcount en C)
                ─► ranking: Reciprocal Rank Fusion de relevancia textual, probabilidad de
                   diagnóstico, compatibilidad, calidad bayesiana y disponibilidad
                ─► diversificación MMR de la primera página (marcas y niveles variados)
@@ -18,8 +19,9 @@ from __future__ import annotations
 
 import math
 import time
+from bisect import bisect_left, bisect_right
 from collections import Counter, defaultdict
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -170,14 +172,78 @@ class SearchEngine:
 
         self.types_by_fit: dict[str, set[str]] = defaultdict(set)
         for p in self.products:
-            self.types_by_fit[p.fit].add(p.part_type_id)
+            for k in p.fits:
+                self.types_by_fit[k].add(p.part_type_id)
 
         # Calidad a priori: calificación bayesiana × log(reseñas)
         self.quality = [ratings.adjusted(p.rating, p.reviews) * math.log1p(p.reviews + 1) for p in self.products]
         self._completions = self._build_completions()
+
+        # Conjuntos de bits: un entero de Python con un bit por producto. Filtrar y contar
+        # facetas disyuntivas es AND/OR/popcount en C en lugar de un bucle por producto.
+        n = len(self.products)
+        self._n = n
+        self._all = (1 << n) - 1
+        per_dim: dict[Dim, dict[str, list[int]]] = {d: defaultdict(list) for d in DIMS}
+        per_key: dict[str, list[int]] = defaultdict(list)
+        for p in self.products:
+            for d, v in zip(DIMS, (p.cat_id, p.part_type_id, p.brand_id, p.tier, p.position), strict=True):
+                if v:
+                    per_dim[d][v].append(p.i)
+            for k in p.fits:
+                per_key[k].append(p.i)
+        self._dim_bits = {d: {v: _bitset(ix, n) for v, ix in vals.items()} for d, vals in per_dim.items()}
+        self._key_bits = {k: _bitset(ix, n) for k, ix in per_key.items()}
+        self._stock_bits = _bitset((p.i for p in self.products if p.in_stock), n)
+        self._sale_bits = _bitset((p.i for p in self.products if p.on_sale), n)
+        self._fit_masks: dict[frozenset[str], int] = {}
+        self._price = [p.price for p in self.products]
+        self._by_price = sorted(range(n), key=self._price.__getitem__)
+        self._sorted_prices = [self._price[i] for i in self._by_price]
+        # claves de orden precalculadas (mismos valores que antes: el orden resultante es idéntico)
+        self._quality_key = [-q for q in self.quality]
+        self._stock_key = [(not p.in_stock, -p.stock_total) for p in self.products]
+        self._rating_key = [-ratings.adjusted(p.rating, p.reviews) for p in self.products]
+        self._tier_key = [(TIER_ORDER.index(p.tier), p.price) for p in self.products]
+        self._universal = [p.universal for p in self.products]
+        self._brand = [p.brand_id for p in self.products]
+        self._tier = [p.tier for p in self.products]
+        self._part_type = [p.part_type_id for p in self.products]
+        # órdenes globales estables: para candidatos en orden de índice equivalen a ordenarlos
+        self._quality_order = sorted(range(n), key=self._quality_key.__getitem__)
+        self._stock_order = sorted(range(n), key=self._stock_key.__getitem__)
         self.build_ms = (time.perf_counter() - t0) * 1000
 
     # ------------------------------------------------------------------ utilidades
+
+    def _fit_mask(self, keys: frozenset[str]) -> int:
+        """Productos que sirven en alguna configuración del vehículo (memorizado por vehículo)."""
+        mask = self._fit_masks.get(keys)
+        if mask is None:
+            mask = self._key_bits.get("*", 0)
+            if len(keys) < len(self._key_bits):
+                for k in keys:
+                    mask |= self._key_bits.get(k, 0)
+            else:
+                for k, bits in self._key_bits.items():
+                    if k in keys:
+                        mask |= bits
+            if len(self._fit_masks) >= 512:
+                self._fit_masks.clear()
+            self._fit_masks[keys] = mask
+        return mask
+
+    def _price_mask(self, lo: float | None, hi: float | None) -> int:
+        a = bisect_left(self._sorted_prices, lo) if lo is not None else 0
+        b = bisect_right(self._sorted_prices, hi) if hi is not None else self._n
+        return _bitset(self._by_price[a:b], self._n)
+
+    @staticmethod
+    def _union(bits: dict[str, int], values: Iterable[str]) -> int:
+        mask = 0
+        for v in values:
+            mask |= bits.get(v, 0)
+        return mask
 
     def lookup_pn(self, key: str) -> tuple[PNKind, list[int]] | None:
         return self.exact.get(key)
@@ -187,7 +253,7 @@ class SearchEngine:
         by_type = Counter(p.part_type_id for p in self.products)
         by_cat = Counter(p.cat_id for p in self.products)
         by_brand = Counter(p.brand_id for p in self.products)
-        by_fit = Counter(p.fit for p in self.products)
+        by_fit = Counter(k for p in self.products for k in p.fits)
         out: list[tuple[str, str, int]] = []
         for pt in c.part_types:
             out.append((pt.name, fold(pt.name), by_type[pt.id]))
@@ -335,58 +401,63 @@ class SearchEngine:
         pmin = req.price_min if req.price_min is not None else parsed.price_min
         pmax = req.price_max if req.price_max is not None else parsed.price_max
 
-        counts: dict[Dim, Counter[str]] = {d: Counter() for d in DIMS}
-        hits: list[tuple[Product, float, bool]] = []
-        hidden = in_stock_n = on_sale_n = 0
-        prices: list[float] = []
-        bit = _BIT
-
-        candidates = (self.products[i] for i in scores) if scores is not None else iter(self.products)
-        for p in candidates:
-            if symptom_types is not None and p.part_type_id not in symptom_types:
-                continue
-            if pos_words and not (p.position and any(w in p.position.lower() for w in pos_words)):
-                continue
-            values = (p.cat_id, p.part_type_id, p.brand_id, p.tier, p.position)
-            mask = 0
-            for d, v in zip(DIMS, values, strict=True):
-                if sel[d] and v not in sel[d]:
-                    mask |= bit[d]
-            if (pmin is not None and p.price < pmin) or (pmax is not None and p.price > pmax):
-                mask |= bit["price"]
-            stocked = p.in_stock
-            if req.in_stock and not stocked:
-                mask |= bit["stock"]
-            sale = p.on_sale
-            if req.on_sale and not sale:
-                mask |= bit["sale"]
-            if fit_keys is not None and p.fit != "*" and p.fit not in fit_keys:
-                if mask == 0:
-                    hidden += 1
-                continue
-            if mask == 0:
-                hits.append((p, scores[p.i] if scores is not None else 0.0, fit_keys is not None and p.fit != "*"))
-                for d, v in zip(DIMS, values, strict=True):
-                    if v:
-                        counts[d][v] += 1
-            elif mask & (mask - 1) == 0:  # falla una sola dimensión: cuenta para esa faceta
-                for d, v in zip(DIMS, values, strict=True):
-                    if mask == bit[d] and v:
-                        counts[d][v] += 1
-            if mask & ~bit["price"] == 0:
-                prices.append(p.price)
-            if mask & ~bit["stock"] == 0 and stocked:
-                in_stock_n += 1
-            if mask & ~bit["sale"] == 0 and sale:
-                on_sale_n += 1
-
-        ordered = self._rank(hits, req, symptom_types, has_text=bool(words) or scores is not None)
-        page = ordered[req.page * req.size : (req.page + 1) * req.size]
+        # candidatos (texto / número de parte), síntomas y palabras de posición
+        cand = self._all if scores is None else _bitset(scores, self._n)
+        if symptom_types is not None:
+            cand &= self._union(self._dim_bits["partType"], symptom_types)
+        if pos_words:
+            cand &= self._union(
+                self._dim_bits["position"],
+                (v for v in self._dim_bits["position"] if any(w in v.lower() for w in pos_words)),
+            )
+        dim_ok = {d: self._union(self._dim_bits[d], sel[d]) if sel[d] else self._all for d in DIMS}
+        price_ok = self._all if pmin is None and pmax is None else self._price_mask(pmin, pmax)
+        stock_ok = self._stock_bits if req.in_stock else self._all
+        sale_ok = self._sale_bits if req.on_sale else self._all
+        fit = self._all if fit_keys is None else self._fit_mask(fit_keys)
+        dims_all = self._all
+        for d in DIMS:
+            dims_all &= dim_ok[d]
+        base = cand & fit
+        passing = base & dims_all & price_ok & stock_ok & sale_ok
+        hidden = (cand & ~fit & dims_all & price_ok & stock_ok & sale_ok).bit_count()
+        # faceta disyuntiva: cuenta lo que pasa todos los filtros menos el de su propia dimensión
+        counts: dict[Dim, Counter[str]] = {}
+        for d in DIMS:
+            others = base & price_ok & stock_ok & sale_ok
+            for d2 in DIMS:
+                if d2 != d:
+                    others &= dim_ok[d2]
+            counts[d] = Counter({v: n for v, bits in self._dim_bits[d].items() if (n := (others & bits).bit_count())})
+        in_stock_n = (base & dims_all & price_ok & sale_ok & self._stock_bits).bit_count()
+        on_sale_n = (base & dims_all & price_ok & stock_ok & self._sale_bits).bit_count()
+        price_pool = base & dims_all & stock_ok & sale_ok
+        if scores is None:
+            order = _indices(passing)
+        else:
+            keep = set(_indices(passing))
+            order = [i for i in scores if i in keep]
+        same = price_pool == passing and scores is None  # sin filtro de precio: los mismos índices
+        prices = [self._price[i] for i in (order if same else _indices(price_pool))]
+        vehicle_fit = fit_keys is not None
+        score_of: dict[int, float] = {}
+        if req.size == 0:  # solo conteos (portada, facetas): el orden no importa
+            ordered = order
+        else:
+            ordered, score_of = self._rank(
+                order, scores, vehicle_fit, req, symptom_types, has_text=bool(words) or scores is not None
+            )
+        # solo se materializa la página pedida
+        page: list[Hit] = []
+        for i in ordered[req.page * req.size : (req.page + 1) * req.size]:
+            p = self.products[i]
+            fits = vehicle_fit and not self._universal[i]
+            page.append(Hit(p, score_of.get(i, 0.0), fits, self.marks(p.title, highlight)))
         return SearchResult(
             request=req,
             parsed=parsed,
             total=len(ordered),
-            hits=[Hit(p, s, f, self.marks(p.title, highlight)) for p, s, f in page],
+            hits=page,
             facets=self._facets(counts, sel),
             price_hist=_histogram(prices),
             in_stock_count=in_stock_n,
@@ -404,48 +475,60 @@ class SearchEngine:
 
     def _rank(
         self,
-        hits: list[tuple[Product, float, bool]],
+        ids: list[int],
+        scores: dict[int, float] | None,
+        vehicle_fit: bool,
         req: SearchRequest,
         symptom_types: dict[str, float] | None,
         has_text: bool,
-    ) -> list[tuple[Product, float, bool]]:
-        if req.sort == "precio-asc":
-            return sorted(hits, key=lambda h: h[0].price)
-        if req.sort == "precio-desc":
-            return sorted(hits, key=lambda h: -h[0].price)
-        if req.sort == "valoracion":
-            return sorted(hits, key=lambda h: -self.ratings.adjusted(h[0].rating, h[0].reviews))
-        if req.sort == "nivel":
-            return sorted(hits, key=lambda h: (TIER_ORDER.index(h[0].tier), h[0].price))
-        if not hits:
-            return hits
+    ) -> tuple[list[int], dict[int, float]]:
+        """Orden final de los resultados y la puntuación que se informa de cada uno.
 
-        ids = [h[0].i for h in hits]
-        by = {h[0].i: h for h in hits}
-        rankings: list[tuple[list[int], float]] = [
-            (sorted(ids, key=lambda i: -self.quality[i]), 0.35),
-            (sorted(ids, key=lambda i: (not self.products[i].in_stock, -self.products[i].stock_total)), 0.2),
-        ]
+        Todas las claves de orden son listas o diccionarios precalculados (``__getitem__`` en C)
+        con los mismos valores que antes; el ordenamiento de Python es estable, así que el
+        resultado es idéntico al de comparar producto por producto.
+        """
+        plain = scores or {}
+        if req.sort == "precio-asc":
+            return sorted(ids, key=self._price.__getitem__), plain
+        if req.sort == "precio-desc":
+            return sorted(ids, key=self._price.__getitem__, reverse=True), plain
+        if req.sort == "valoracion":
+            return sorted(ids, key=self._rating_key.__getitem__), plain
+        if req.sort == "nivel":
+            return sorted(ids, key=self._tier_key.__getitem__), plain
+        if not ids:
+            return ids, plain
+
+        if scores is None and len(ids) * 4 >= self._n:
+            member = set(ids)  # candidatos en orden de índice: filtrar el orden global es lo mismo
+            by_quality = [i for i in self._quality_order if i in member]
+            by_stock = [i for i in self._stock_order if i in member]
+        else:
+            by_quality = sorted(ids, key=self._quality_key.__getitem__)
+            by_stock = sorted(ids, key=self._stock_key.__getitem__)
+        rankings: list[tuple[list[int], float]] = [(by_quality, 0.35), (by_stock, 0.2)]
         if has_text:
-            rankings.append((sorted(ids, key=lambda i: -by[i][1]), 1.0))
+            rankings.append((sorted(ids, key=plain.__getitem__, reverse=True), 1.0))
         if symptom_types:
-            rankings.append((sorted(ids, key=lambda i: -symptom_types.get(self.products[i].part_type_id, 0)), 1.2))
-        if any(h[2] for h in hits):
-            rankings.append((sorted(ids, key=lambda i: not by[i][2]), 0.5))
+            part_type = self._part_type
+            dx_key = {i: symptom_types.get(part_type[i], 0) for i in ids}
+            rankings.append((sorted(ids, key=dx_key.__getitem__, reverse=True), 1.2))
+        if vehicle_fit:
+            universal = self._universal
+            if not all(universal[i] for i in ids):
+                rankings.append((sorted(ids, key=universal.__getitem__), 0.5))
         fused = rrf(rankings)
-        order = sorted(ids, key=lambda i: -fused[i])
+        order = sorted(ids, key=fused.__getitem__, reverse=True)
+
+        brand, tier, part_type = self._brand, self._tier, self._part_type
 
         def similarity(a: int, b: int) -> float:
-            pa, pb = self.products[a], self.products[b]
-            return (
-                0.55 * (pa.brand_id == pb.brand_id)
-                + 0.3 * (pa.tier == pb.tier)
-                + 0.15 * (pa.part_type_id == pb.part_type_id)
-            )
+            return 0.55 * (brand[a] == brand[b]) + 0.3 * (tier[a] == tier[b]) + 0.15 * (part_type[a] == part_type[b])
 
         cut = (req.page + 3) * req.size
         order = mmr(order[:cut], fused, similarity, top=(req.page + 1) * req.size) + order[cut:]
-        return [(by[i][0], fused[i], by[i][2]) for i in order]
+        return order, fused
 
     def _facets(self, counts: dict[Dim, Counter[str]], sel: dict[Dim, set[str]]) -> dict[Dim, list[FacetValue]]:
         c = self.c
@@ -493,12 +576,38 @@ class SearchEngine:
         return round(times[len(times) // 2], 2)
 
 
+_BYTE_BITS = tuple(tuple(b for b in range(8) if v >> b & 1) for v in range(256))
+
+
+def _bitset(indices: Iterable[int], n: int) -> int:
+    buf = bytearray((n + 7) // 8)
+    for i in indices:
+        buf[i >> 3] |= 1 << (i & 7)
+    return int.from_bytes(buf, "little")
+
+
+def _indices(mask: int) -> list[int]:
+    """Posiciones de los bits encendidos, en orden ascendente."""
+    out: list[int] = []
+    for j, byte in enumerate(mask.to_bytes((mask.bit_length() + 7) // 8, "little")):
+        if byte:
+            base = j << 3
+            out.extend(base + b for b in _BYTE_BITS[byte])
+    return out
+
+
 def _histogram(values: list[float], bins: int = 16) -> tuple[float, float, list[int]]:
+    """Histograma de precios. La cubeta de un precio es monótona en el precio, así que con los
+    valores ordenados basta buscar por bisección dónde empieza cada una: O(k log k) en C."""
     if not values:
         return (0.0, 0.0, [])
-    lo, hi = min(values), max(values)
+    values = sorted(values)
+    lo, hi = values[0], values[-1]
     span = (hi - lo) or 1.0
-    hist = [0] * bins
-    for v in values:
-        hist[min(bins - 1, int((v - lo) / span * bins))] += 1
-    return (math.floor(lo), math.ceil(hi), hist)
+    last = bins - 1
+
+    def bucket(v: float) -> int:
+        return min(last, int((v - lo) / span * bins))
+
+    starts = [bisect_left(values, b, key=bucket) for b in range(bins)] + [len(values)]
+    return (math.floor(lo), math.ceil(hi), [starts[b + 1] - starts[b] for b in range(bins)])

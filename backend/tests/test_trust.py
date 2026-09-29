@@ -33,7 +33,7 @@ def test_confianza_de_marca(store: Store) -> None:
 
 
 def test_compatibilidad_con_confianza(store: Store) -> None:
-    p = next(x for x in store.inventory if x.fit == "e:2ZR-FE")
+    p = next(x for x in store.inventory if x.fits == {"e:2ZR-FE"})
     c = store.catalog
     assert assess(p, VehicleQuery("toyota", "toyota-corolla", 2016, "2ZR-FE"), c).status == "confirmada"
     assert assess(p, VehicleQuery("toyota", "toyota-corolla", 2016), c).status == "condicional"  # 1ZR o 2ZR

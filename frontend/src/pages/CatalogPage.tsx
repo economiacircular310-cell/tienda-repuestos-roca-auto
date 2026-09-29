@@ -154,7 +154,7 @@ export function CatalogPage({ segs }: { segs: string[] }) {
               <div key={g.position} className="overflow-hidden rounded-lg border border-line bg-surface">
                 <p className="label-caps border-b border-line bg-bp px-4 py-2 text-[11px] text-bp-ink">{g.position}</p>
                 {g.items.map((p) => (
-                  <ProductRow key={p.id} p={p} fits={p.fit !== '*'} vehicleName={v?.label} />
+                  <ProductRow key={p.id} p={p} fits={!p.universal} vehicleName={v?.label} />
                 ))}
               </div>
             ))}

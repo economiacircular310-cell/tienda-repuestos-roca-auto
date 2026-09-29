@@ -22,8 +22,12 @@ python -m lenin_auto servicio toyota-corolla:2016:2ZR-FE --km 40000 --presupuest
 python -m lenin_auto vin 2T1BURHE3GC741258 --en-linea
 python -m lenin_auto pieza <id> --vehiculo toyota-corolla:2016
 python -m lenin_auto verificar <token>
+python -m lenin_auto importar inventario.csv --salida inventario.json --reporte problemas.csv
+python -m lenin_auto exportar plantilla.csv -n 50 --separador ";"
+python -m lenin_auto pedidos listar
+python -m lenin_auto pedidos avanzar LAC-7Q2M-9XKD-4 enviado --nota "Guía 123"
 python -m lenin_auto stats
-python -m lenin_auto servir --puerto 8000        # API + interfaz compilada
+LENIN_INVENTORY=inventario.json python -m lenin_auto servir --puerto 8000   # API + interfaz
 ```
 
 Todas aceptan `--json`.
@@ -45,18 +49,28 @@ Todas aceptan `--json`.
 | GET | `/api/vin/{vin}` | Decodificación ISO 3779 (`online=true` consulta la NHTSA) |
 | GET | `/api/catalog?path=` | Columnas del explorador Marca → Año → Modelo → Motor → Sistema → Pieza |
 | GET | `/api/home` | Datos de la portada |
+| POST | `/api/orders` | Registra un pedido (cabecera `Idempotency-Key`); congela precios y certifica cada pieza compatible |
+| POST | `/api/orders/lookup` | Seguimiento con código y correo |
+
+Todas las rutas `/api/` (menos `/api/health`) pasan por el limitador token bucket y
+responden con `RateLimit-Limit`, `RateLimit-Remaining` y `RateLimit-Reset`; al exceder,
+429 con `Retry-After`. Todas las respuestas llevan CSP estricta, `nosniff`,
+`X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy` y, sobre HTTPS, HSTS.
 
 ## Estructura
 
 ```
 lenin_auto/
   catalog/        JSON editables (vehículos, taxonomía, léxico, síntomas) + modelo tipado
-  inventory.py    inventario de demostración determinista (reemplazable por el feed real)
+  inventory.py    Product, inventario de demostración determinista e instantáneas JSON
+  importer.py     CSV del ERP → instantánea, con reporte por fila; exportación a CSV
   search/         text · phonetic · symspell · bm25 · fusion · parser · engine
   trust/          ratings · value · brand · fitment · certificate
   workshop/       diagnosis (Bayes + Weibull) · maintenance (plan + mochila)
   logistics/      shipping (set cover exacto)
   vin.py          ISO 3779 + vPIC
+  orders.py       pedidos en SQLite: códigos Luhn mod 32, estados, idempotencia
+  security.py     token bucket y cabeceras de seguridad (ASGI puro)
   store.py        fachada: arma todo una vez
   api.py · cli.py
 ```
@@ -67,5 +81,6 @@ lenin_auto/
 ruff check . && ruff format --check . && mypy lenin_auto && pytest
 ```
 
-mypy en modo estricto; 54 pruebas cubren texto, búsqueda, diagnóstico, mantenimiento,
-confianza, logística, VIN y la API.
+mypy en modo estricto; 83 pruebas cubren texto, búsqueda, diagnóstico, mantenimiento,
+confianza, logística, VIN, pedidos, seguridad, el importador (ida y vuelta de las 20 885
+piezas) y la API, más pruebas diferenciales del motor contra su definición literal.

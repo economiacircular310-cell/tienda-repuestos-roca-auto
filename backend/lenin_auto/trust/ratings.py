@@ -16,6 +16,8 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
+NEUTRAL_RATING = 4.0
+
 
 def bayesian_average(rating: float, n: int, prior_mean: float, prior_weight: float) -> float:
     return (n * rating + prior_weight * prior_mean) / (n + prior_weight)
@@ -40,8 +42,9 @@ class RatingModel:
 
     @classmethod
     def fit(cls, ratings: list[tuple[float, int]], prior_weight: float = 25.0) -> RatingModel:
-        total = sum(n for _, n in ratings) or 1
-        return cls(sum(r * n for r, n in ratings) / total, prior_weight)
+        """C = promedio ponderado por reseñas; sin ninguna reseña (inventario recién importado), 4★ neutral."""
+        total = sum(n for _, n in ratings)
+        return cls(sum(r * n for r, n in ratings) / total if total else NEUTRAL_RATING, prior_weight)
 
     def adjusted(self, rating: float, n: int) -> float:
         return bayesian_average(rating, n, self.prior_mean, self.prior_weight)

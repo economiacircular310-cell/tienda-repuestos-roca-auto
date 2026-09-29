@@ -29,7 +29,7 @@ export interface Product {
   reviews: number;
   rating_adjusted: number;
   satisfaction: number;
-  fit: string;
+  universal: boolean;
   oem: string[];
   xref: string[];
   specs: [string, string][];
@@ -103,6 +103,7 @@ export interface ProductDetail {
   product: Product;
   fitment: { status: 'confirmada' | 'condicional' | 'universal' | 'no' | 'sin-vehiculo'; confidence: number; reason: string };
   vehicles: { make_id: string; make: string; model_id: string; model: string; generation: string; years: [number, number]; engines: string[] }[];
+  fitment_summary: string;
   alternatives: Product[];
   related: Product[];
   brand_trust: { score: number; grade: string; rating: number; reviews: number; references: number; in_stock_pct: number; oem_supplier: boolean };
@@ -187,6 +188,7 @@ export interface CatalogTree {
 }
 
 export interface Stats {
+  demo: boolean;
   products: number;
   brands: number;
   vehicles: number;
