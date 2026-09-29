@@ -1,0 +1,336 @@
+@import 'tailwindcss';
+
+/*
+ * Lenin Auto Cars — identidad "plano técnico de taller".
+ * Tinta azul marino de manual de servicio, azul plano (blueprint) para las ilustraciones,
+ * amarillo señal de etiqueta de almacén como único acento. Tipos: Barlow Condensed
+ * (rotulación DIN de carretera), IBM Plex Sans (lectura) e IBM Plex Mono (números de parte).
+ */
+:root {
+  --bg: #eef1f5;
+  --surface: #ffffff;
+  --surface-2: #f5f7fa;
+  --ink: #0d1b2a;
+  --ink-2: #33455a;
+  --muted: #5a6b7f;
+  --line: #d3dae3;
+  --line-strong: #b4c0ce;
+  --accent: #ffc31f;
+  --accent-ink: #1a1400;
+  --accent-soft: #fff3cc;
+  --link: #1f4cc7;
+  --ok: #0f7a45;
+  --ok-soft: #e3f4ea;
+  --warn: #a4570b;
+  --warn-soft: #fcefdc;
+  --danger: #c0321e;
+  --bp: #0e2745;
+  --bp-2: #133259;
+  --bp-grid: #1b3960;
+  --bp-grid-fine: #152f52;
+  --bp-ink: #dce9fa;
+  --bp-dim: #8aa8cf;
+  --t-eco: #64748b;
+  --t-daily: #1f4cc7;
+  --t-perf: #c0321e;
+  --t-oem: #0d1b2a;
+  --shadow: 0 1px 2px rgb(13 27 42 / 0.06), 0 8px 24px -12px rgb(13 27 42 / 0.18);
+  --shadow-lg: 0 24px 64px -20px rgb(13 27 42 / 0.45);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0a0f16;
+    --surface: #111923;
+    --surface-2: #16202d;
+    --ink: #e5ecf4;
+    --ink-2: #c1ccd9;
+    --muted: #8b9bb0;
+    --line: #223043;
+    --line-strong: #33465e;
+    --accent: #ffc31f;
+    --accent-ink: #1a1400;
+    --accent-soft: #3a2f0a;
+    --link: #8fb0ff;
+    --ok: #3fcf85;
+    --ok-soft: #0f2d1e;
+    --warn: #f0a43a;
+    --warn-soft: #33230c;
+    --danger: #ff7a66;
+    --bp: #0a1d35;
+    --bp-2: #0e2544;
+    --bp-grid: #17345a;
+    --bp-grid-fine: #112a4a;
+    --bp-ink: #dce9fa;
+    --bp-dim: #7f9dc4;
+    --t-eco: #94a3b8;
+    --t-daily: #8fb0ff;
+    --t-perf: #ff7a66;
+    --t-oem: #e5ecf4;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+    --shadow-lg: 0 24px 64px -20px rgb(0 0 0 / 0.8);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #0a0f16;
+  --surface: #111923;
+  --surface-2: #16202d;
+  --ink: #e5ecf4;
+  --ink-2: #c1ccd9;
+  --muted: #8b9bb0;
+  --line: #223043;
+  --line-strong: #33465e;
+  --accent: #ffc31f;
+  --accent-ink: #1a1400;
+  --accent-soft: #3a2f0a;
+  --link: #8fb0ff;
+  --ok: #3fcf85;
+  --ok-soft: #0f2d1e;
+  --warn: #f0a43a;
+  --warn-soft: #33230c;
+  --danger: #ff7a66;
+  --bp: #0a1d35;
+  --bp-2: #0e2544;
+  --bp-grid: #17345a;
+  --bp-grid-fine: #112a4a;
+  --bp-ink: #dce9fa;
+  --bp-dim: #7f9dc4;
+  --t-eco: #94a3b8;
+  --t-daily: #8fb0ff;
+  --t-perf: #ff7a66;
+  --t-oem: #e5ecf4;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 24px 64px -20px rgb(0 0 0 / 0.8);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-link: var(--link);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-bp: var(--bp);
+  --color-bp-2: var(--bp-2);
+  --color-bp-grid: var(--bp-grid);
+  --color-bp-ink: var(--bp-ink);
+  --color-bp-dim: var(--bp-dim);
+  --color-t-eco: var(--t-eco);
+  --color-t-daily: var(--t-daily);
+  --color-t-perf: var(--t-perf);
+  --color-t-oem: var(--t-oem);
+  --font-display: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --shadow-card: var(--shadow);
+  --shadow-float: var(--shadow-lg);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 8rem;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rótulo condensado de plano/señalética */
+.label-caps {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Papel de plano técnico: cuadrícula mayor + menor */
+.bp-paper {
+  background-color: var(--bp);
+  background-image:
+    linear-gradient(var(--bp-grid) 1px, transparent 1px), linear-gradient(90deg, var(--bp-grid) 1px, transparent 1px),
+    linear-gradient(var(--bp-grid-fine) 1px, transparent 1px), linear-gradient(90deg, var(--bp-grid-fine) 1px, transparent 1px);
+  background-size:
+    96px 96px,
+    96px 96px,
+    16px 16px,
+    16px 16px;
+  background-position: -1px -1px;
+  color: var(--bp-ink);
+}
+
+/* Etiqueta de ubicación de almacén para números de parte */
+.pn-tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--line-strong);
+  border-left: 4px solid var(--accent);
+  background: var(--surface);
+  color: var(--ink);
+  padding: 1px 6px 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* Marcador amarillo tipo resaltador de manual */
+.marker {
+  background: linear-gradient(transparent 58%, var(--accent) 58%, var(--accent) 92%, transparent 92%);
+  color: inherit;
+  padding: 0 0.08em;
+}
+
+mark.hl {
+  background: var(--accent-soft);
+  color: inherit;
+  border-radius: 2px;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(8px);
+    opacity: 0.001;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    r: 7;
+    opacity: 0.9;
+  }
+  100% {
+    r: 20;
+    opacity: 0;
+  }
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes pop {
+  from {
+    transform: translateY(-6px) scale(0.985);
+    opacity: 0.001;
+  }
+}
+
+.anim-rise {
+  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.anim-pop {
+  animation: pop 0.18s ease-out both;
+}
+.anim-slide {
+  animation: slide-in 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.draw-in {
+  stroke-dasharray: 2400;
+  stroke-dashoffset: 2400;
+  animation: dash 2.4s cubic-bezier(0.6, 0.1, 0.2, 1) 0.1s forwards;
+}
+.hotspot-ring {
+  animation: pulse-ring 2.2s ease-out infinite;
+}
+.caret::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: -0.18em;
+  background: currentColor;
+  animation: caret 1s steps(1) infinite;
+}
+.marquee {
+  animation: marquee 48s linear infinite;
+}
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .draw-in {
+    stroke-dashoffset: 0;
+  }
+}
