@@ -1,125 +1,98 @@
 # Arquitectura
 
-## Stack
+## Principio
 
-| Capa     | Elección                                            | Por qué                                                             |
-| -------- | --------------------------------------------------- | ------------------------------------------------------------------- |
-| Interfaz | React 19 + TypeScript estricto                      | Ecosistema estándar, tipado de punta a punta.                       |
-| Estilos  | Tailwind CSS 4 con tokens CSS (`src/index.css`)     | Tema claro/oscuro por variables, sin CSS muerto.                    |
-| Build    | Vite 8 (`base: './'`)                               | Build de ~1 s; el resultado funciona en cualquier hosting estático. |
-| Búsqueda | Motor propio sobre MiniSearch, en un **Web Worker** | El índice (~20 000 piezas) nunca bloquea la interfaz.               |
-| Pruebas  | Vitest                                              | Pruebas del motor y los algoritmos.                                 |
-| Fuentes  | Fontsource (autoalojadas)                           | Sin depender de Google Fonts; solo el subconjunto latino.           |
-
-Sin backend: el catálogo de demostración se genera de forma determinista en el navegador.
-
-## Carpetas
-
-```
-src/
-  config.ts            nombre, moneda, idioma, umbral de envío gratis
-  data/                vehículos, taxonomía, marcas, almacenes, inventario (generador)
-  search/              texto, intérprete, diagnóstico, motor, worker y cliente
-  lib/                 enrutador, estado, VIN, índice de valor, envíos, mantenimiento
-  state/app.ts         garaje, carrito, recientes, tema, avisos
-  components/          encabezado, paleta de búsqueda, lámina del vehículo, tarjetas…
-  pages/               inicio, resultados, ficha, catálogo, mantenimiento
-```
-
-## Modelo de compatibilidad
-
-Cada producto tiene una sola clave `fit`:
-
-- `g:<generación>` — piezas de carrocería/chasis (pastillas, amortiguadores, faros).
-- `e:<código de motor>` — piezas de motor (filtros, bujías, distribución). Un mismo motor
-  aparece en varios modelos y marcas (p. ej. `G4FC` en Hyundai Accent y Kia Rio, `Duratorq 3.2`
-  en Ford Ranger y Mazda BT-50), así que la compatibilidad cruzada sale sola.
-- `*` — universales (aceites, líquidos, bombillos).
-
-Un vehículo (completo o parcial) se traduce a un conjunto de claves con `fitKeysFor()`, y
-filtrar es una búsqueda en un `Set`: O(1) por producto.
-
-## Flujo de una búsqueda
+Toda la inteligencia vive en **Python** (`backend/lenin_auto`); la interfaz React es un
+cliente delgado que pide datos ya calculados: resultados con rangos resaltados, chips con
+la consulta resultante al quitarlos, diagnósticos, planes, cotizaciones y certificados.
 
 ```mermaid
 flowchart LR
-  Q[Consulta] --> P[Intérprete]
-  P -->|número de parte / OEM| X[Índice exacto normalizado]
-  P -->|síntoma| D[Diagnóstico bayesiano]
-  P -->|texto libre| M[BM25 + prefijo + difuso]
-  P -->|vehículo, pieza, posición, nivel, precio| F[Filtros]
-  X --> C[Candidatos]
-  M --> C
-  D --> F
-  C --> F --> R[Ranking] --> Facetas[Facetas disyuntivas] --> UI
+  UI[React · frontend] -- HTTP/JSON --> API[FastAPI · api.py]
+  CLI[CLI · cli.py] --> Store
+  API --> Store[store.py · fachada]
+  Store --> Catalog[catalog · JSON tipado]
+  Store --> Inventory[inventory]
+  Store --> Search[search]
+  Store --> Trust[trust]
+  Store --> Workshop[workshop]
+  Store --> Logistics[logistics]
 ```
 
-1. **Intérprete** (`search/parser.ts`)
-   - Rangos de precio: «menos de 60», «entre 20 y 80», «desde 100».
-   - Número de parte: la consulta completa o ventanas de hasta 4 palabras se normalizan
-     (`P 83 140` = `p83-140` = `P83140`) y se buscan en un mapa exacto de parte, OEM y
-     referencias cruzadas.
-   - Síntomas (ver abajo), antes que las frases de piezas para que «luz de motor» no se lea como
-     las categorías Iluminación y Motor.
-   - Diccionario de frases con coincidencia más larga primero: modelos (con alias: `cr-v`,
-     `crv`, `cr v`), marcas, tipos de pieza con sinónimos regionales (balatas, mofle, croche,
-     rótula, maza, bocín…), categorías, marcas de repuesto, posición, nivel, combustible.
-   - Año, cilindrada («2.8») y código de motor («2zr-fe», «1gd»), resueltos contra el modelo.
-   - Corrección de errores con distancia de Damerau-Levenshtein (1 error hasta 7 letras, 2
-     desde 8), sin confundir género («encendida» no es «encendido»).
-   - Singular/plural con una regla simple y predecible (la misma al indexar y al buscar).
-2. **Texto libre**: MiniSearch (BM25) con pesos por campo (título 3, marca 2,5, specs 1),
-   prefijo en la última palabra, difuso desde 5 letras. Si con AND no hay nada, prueba con la
-   corrección ortográfica del vocabulario y luego con OR (y lo avisa).
-3. **Filtros y facetas disyuntivas**: cada producto se evalúa una vez con una máscara de bits
-   por dimensión. Si falla en una sola dimensión cuenta para esa faceta; así cada faceta muestra
-   cuántos resultados tendrías al marcar otra opción (como Algolia). También cuenta las piezas
-   ocultas por compatibilidad.
-4. **Ranking**: `10·texto + 8·P(causa) + 0,8·compatible + 0,25·log(popularidad) + 0,4·stock`.
+`Store` arma una sola vez catálogo, inventario, índices y modelos (~2 s) y expone cada caso
+de uso como un método. La API y la CLI solo traducen.
 
-Rendimiento medido (Node 22, 20 885 piezas): índice en ~550 ms dentro del worker, mediana de
-consulta ~4 ms. La portada muestra la mediana real medida en el navegador del visitante.
+## Datos
 
-## Algoritmos exclusivos
+- `catalog/vehicles.json`: 13 fabricantes, 65 modelos, 125 generaciones, 118 motores.
+- `catalog/taxonomy.json`: 13 categorías, 53 tipos de pieza con sinónimos regionales,
+  4 niveles, 53 marcas, almacenes, formatos de números OEM.
+- `catalog/lexicon.json`: alias de categorías y marcas, posiciones, niveles, combustibles.
+- `catalog/symptoms.json`: 24 síntomas con frases coloquiales, pesos por pieza y vida útil.
 
-### Diagnóstico por síntomas — `search/diagnosis.ts`
+Compatibilidad con una sola clave por producto: `g:<generación>` (carrocería/chasis),
+`e:<motor>` (motor; sirve en todo modelo que lo monte: `G4FC` en Hyundai Accent y Kia Rio)
+o `*` (universal). Un vehículo parcial o completo se traduce a un conjunto de claves.
 
-`P(pieza | síntoma, vehículo) ∝ P(síntoma | pieza) · (0,35 + 0,65 · (1 − e^(−km / vida útil)))`
+## Búsqueda (`search/`)
 
-- 24 síntomas con frases coloquiales («chilla al frenar», «jalonea», «bota agua»).
-- `km` se estima por la antigüedad del vehículo (15 000 km/año) o se toma del usuario.
-- Se descartan causas sin piezas para ese vehículo (un Corolla 2016 no tiene zapatas) y se
-  renormaliza.
+1. **Intérprete** (`parser.py`): precio → número de parte/OEM (ventanas de hasta 4 palabras
+   normalizadas) → **síntomas** → frases del léxico por coincidencia más larga → año,
+   cilindrada y código de motor resueltos contra el modelo → corrección con
+   Damerau-Levenshtein (sin confundir género: «encendida» ≠ «encendido»). Cada chip lleva
+   la consulta que queda al quitarlo.
+2. **Índice BM25F** (`bm25.py`, Robertson & Zaragoza): título 3, marca 2,5,
+   especificaciones 1; k1 = 1,2, b = 0,75. Vocabulario ordenado para expandir prefijos
+   por búsqueda binaria.
+3. **Variantes por palabra** (`engine.py`): exacta 1,0 · prefijo 0,8 · **SymSpell** 0,7/0,5
+   (`symspell.py`, borrado simétrico de Wolf Garbe) · **fonética española** 0,75
+   (`phonetic.py`: b/v, s/c/z, ll/y, h muda, gu/w, g/j). Solo se corrige si no hay
+   coincidencia exacta ni de prefijo, y se le avisa al cliente con el canal usado.
+4. **Filtros y facetas disyuntivas**: una pasada con máscara de bits; si un producto falla
+   en una sola dimensión, cuenta para esa faceta. También cuenta lo que oculta la
+   compatibilidad.
+5. **Ranking** (`fusion.py`): **Reciprocal Rank Fusion** (Cormack et al., SIGIR 2009) de
+   relevancia textual (1,0), probabilidad de diagnóstico (1,2), compatibilidad (0,5),
+   calidad bayesiana (0,35) y disponibilidad (0,2); luego **MMR** (Carbonell & Goldstein,
+   SIGIR 1998) con λ = 0,5 para variar marcas y niveles en la primera página.
 
-### Plan de mantenimiento — `lib/service.ts`
+Mediana medida: 25–35 ms por consulta en CPython para 20 885 piezas (la API la mide al arrancar y la publica en `/api/stats`).
 
-Tareas con intervalo (aceite 10 000 km, bujías 40 000, distribución 100 000…). En el servicio
-de K km toca todo lo que divide a K. Por tarea se arman tres paquetes: el más barato con
-existencias, el de mejor índice de valor y el mejor calificado de nivel alto. Cantidades según el
-motor (bujías × cilindros); aceite según combustible y año (15W-40 diésel, 0W-20 desde 2018).
+## Confianza (`trust/`)
 
-### Índice de valor — `lib/value.ts`
+| Módulo | Qué calcula |
+| --- | --- |
+| `ratings.py` | Promedio bayesiano `(n·R + m·C)/(n + m)` con C estimado del catálogo y m = 25; límite inferior de Wilson al 95 % |
+| `value.py` | Índice de valor `R̃²·√garantía·stock/precio^0,7` (un «mejor valor» por grupo de equivalentes) y precio justo por percentil de su mercado |
+| `brand.py` | Índice de confianza de marca 0–100 y nota A+…D (calificación escalada al rango real, garantía, disponibilidad, proveedor OEM, amplitud) |
+| `fitment.py` | Estado y confianza de compatibilidad: confirmada, condicional (con probabilidad), universal, no |
+| `certificate.py` | Token `base64url(carga).base64url(HMAC-SHA256)`, verificación con `hmac.compare_digest` |
 
-`(valoración/5)² · confianza(reseñas) · √(años de garantía) · stock / precio^0,7`, comparado solo
-entre opciones de la misma pieza. El exponente < 1 evita que siempre gane lo más barato.
+## Taller (`workshop/`)
 
-### Consolidación de envíos — `lib/shipping.ts`
+- **Diagnóstico**: `P(pieza | síntomas, km) ∝ P(pieza | km) · Π P(s | pieza)`, con
+  ε = 0,03 para piezas que no explican un síntoma y a priori
+  `0,25 + 0,75·F_Weibull(km; η = vida útil, β por categoría)`. Solo se consideran piezas que
+  existen para ese vehículo.
+- **Mantenimiento**: tareas con intervalo; en K km toca todo intervalo que divide a K.
+  Tres paquetes por tarea (más barato con stock, mejor valor, mejor calificado de nivel
+  alto). Con presupuesto, **mochila 0/1** por programación dinámica: paquetes indivisibles
+  (aceite + filtro) y valor `(n+1)^prioridad`, que hace el óptimo lexicográfico: la
+  seguridad siempre primero.
 
-Búsqueda exacta sobre los 2^W − 1 conjuntos de almacenes (7 con 3 almacenes): menos envíos,
-luego menor plazo máximo. Lo que no alcanza con el stock total va a pedido.
+## Logística y VIN
 
-### Decodificador de VIN — `lib/vin.ts`
-
-Fabricante por WMI, año por la posición 10, dígito verificador ISO 3779, región de origen; y si
-hay red, modelo y cilindrada con la API pública vPIC de la NHTSA.
+- `logistics/shipping.py`: set cover exacto sobre los 2^W − 1 conjuntos de almacenes
+  (menos envíos → menor plazo); reparto de líneas que no caben en uno solo.
+- `vin.py`: WMI → fabricante, posición 10 → año (ciclo de 30), dígito verificador
+  ISO 3779; opcionalmente modelo y cilindrada con la API vPIC de la NHTSA.
 
 ## Camino a producción
 
-| Tema              | Recomendación                                                                                                                                                                                                                 |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Datos de catálogo | Reemplazar `data/inventory.ts` por el feed real: ERP propio, estándares ACES/PIES o TecDoc para compatibilidad y referencias cruzadas.                                                                                        |
-| Búsqueda a escala | Con cientos de miles de piezas, mover el índice a Meilisearch o Typesense (tienen sinónimos, tolerancia a errores y facetas). El intérprete, el diagnóstico y los algoritmos de `lib/` se reutilizan tal cual en el servidor. |
-| Comercio          | Carrito y pedidos en un backend headless (Medusa, Shopify Storefront API o WooCommerce).                                                                                                                                      |
-| Pagos             | Mercado Pago, Stripe o la pasarela local.                                                                                                                                                                                     |
-| SEO               | Prerenderizar fichas y categorías (Vite SSG o migrar las páginas a Astro/Next.js) y cambiar el enrutador por hash a rutas reales; la ficha ya publica datos estructurados `Product` (JSON-LD).                                |
-| Analítica         | Registrar búsquedas sin resultados para ampliar sinónimos y síntomas.                                                                                                                                                         |
+| Tema | Recomendación |
+| --- | --- |
+| Catálogo real | Reemplazar `inventory.py` por el feed del ERP, ACES/PIES o TecDoc manteniendo `Product`. |
+| Escala | Con cientos de miles de piezas, mover el índice a Meilisearch/Typesense/OpenSearch; el intérprete, el diagnóstico y los algoritmos de confianza se reutilizan tal cual. |
+| Persistencia | Pedidos y clientes en PostgreSQL; el garaje y el carrito ya son estado del cliente. |
+| Secretos | `LENIN_SECRET` desde el gestor de secretos del proveedor; rotarlo invalida certificados viejos (se puede versionar con el campo `v`). |
+| SEO | Prerenderizar fichas y categorías y pasar el enrutador por hash a rutas reales. |

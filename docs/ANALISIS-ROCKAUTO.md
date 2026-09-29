@@ -63,7 +63,9 @@ sigue es qué hace bien, dónde se queda corto y qué hicimos distinto.
 
 ### Algoritmos
 
-Ver [ARQUITECTURA.md](./ARQUITECTURA.md): intérprete de lenguaje natural, índice BM25 con
-prefijos y tolerancia a errores, normalización de números de parte y OEM, facetas disyuntivas,
-modelo bayesiano de diagnóstico, planificador de mantenimiento, índice de valor y consolidación
-de envíos.
+Todo corre en Python en el servidor (ver [ARQUITECTURA.md](./ARQUITECTURA.md)): intérprete de
+lenguaje natural, BM25F, SymSpell y fonética española, Reciprocal Rank Fusion y MMR,
+facetas disyuntivas, diagnóstico con Bayes ingenuo y Weibull, plan de mantenimiento con
+mochila 0/1 lexicográfica, promedio bayesiano y límite de Wilson, índice de confianza de
+marca, precio justo, certificados HMAC-SHA256, set cover exacto para envíos e ISO 3779 para
+el VIN.

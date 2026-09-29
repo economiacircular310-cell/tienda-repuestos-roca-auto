@@ -1,0 +1,2758 @@
+{
+  "min_year": 2005,
+  "max_year": 2026,
+  "makes": [
+    {
+      "id": "chevrolet",
+      "name": "Chevrolet",
+      "aliases": [
+        "chevy",
+        "gm"
+      ]
+    },
+    {
+      "id": "ford",
+      "name": "Ford",
+      "aliases": []
+    },
+    {
+      "id": "honda",
+      "name": "Honda",
+      "aliases": []
+    },
+    {
+      "id": "hyundai",
+      "name": "Hyundai",
+      "aliases": [
+        "hyunday",
+        "hiundai"
+      ]
+    },
+    {
+      "id": "jeep",
+      "name": "Jeep",
+      "aliases": []
+    },
+    {
+      "id": "kia",
+      "name": "Kia",
+      "aliases": []
+    },
+    {
+      "id": "mazda",
+      "name": "Mazda",
+      "aliases": []
+    },
+    {
+      "id": "mitsubishi",
+      "name": "Mitsubishi",
+      "aliases": [
+        "mitsu"
+      ]
+    },
+    {
+      "id": "nissan",
+      "name": "Nissan",
+      "aliases": [
+        "nisan"
+      ]
+    },
+    {
+      "id": "renault",
+      "name": "Renault",
+      "aliases": [
+        "reno"
+      ]
+    },
+    {
+      "id": "suzuki",
+      "name": "Suzuki",
+      "aliases": []
+    },
+    {
+      "id": "toyota",
+      "name": "Toyota",
+      "aliases": []
+    },
+    {
+      "id": "volkswagen",
+      "name": "Volkswagen",
+      "aliases": [
+        "vw",
+        "volks",
+        "wolkswagen"
+      ]
+    }
+  ],
+  "engines": [
+    {
+      "code": "1ZZ-FE",
+      "liters": 1.8,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "2ZR-FE",
+      "liters": 1.8,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "1ZR-FE",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "M20A-FKS",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "2ZR-FXE",
+      "liters": 1.8,
+      "cyl": 4,
+      "fuel": "Híbrido",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "1NZ-FE",
+      "liters": 1.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "2NR-FE",
+      "liters": 1.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "2TR-FE",
+      "liters": 2.7,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "1KD-FTV",
+      "liters": 3,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "1GD-FTV",
+      "liters": 2.8,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "2GD-FTV",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "2AZ-FE",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "3ZR-FAE",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "2AR-FE",
+      "liters": 2.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "A25A-FKS",
+      "liters": 2.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "1GR-FE",
+      "liters": 4,
+      "cyl": 6,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "V"
+    },
+    {
+      "code": "MR20DE",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "MR18DE",
+      "liters": 1.8,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "MR20DD",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "HR16DE",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "KA24DE",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "YD25DDTi",
+      "liters": 2.5,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "QR25DE",
+      "liters": 2.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "YS23DDT",
+      "liters": 2.3,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "F16D3",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "L2B",
+      "liters": 1.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "LCU",
+      "liters": 1.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "B10D1",
+      "liters": 1,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "B12D1",
+      "liters": 1.2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "SPE-4",
+      "liters": 1.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "B10XFT",
+      "liters": 1,
+      "cyl": 3,
+      "fuel": "Gasolina",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "F18D4",
+      "liters": 1.8,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "LE2",
+      "liters": 1.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "LC9",
+      "liters": 5.3,
+      "cyl": 8,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "V"
+    },
+    {
+      "code": "L83",
+      "liters": 5.3,
+      "cyl": 8,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "V"
+    },
+    {
+      "code": "L84",
+      "liters": 5.3,
+      "cyl": 8,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "V"
+    },
+    {
+      "code": "L87",
+      "liters": 6.2,
+      "cyl": 8,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "V"
+    },
+    {
+      "code": "LE5",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "Z20S",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "Duratec 2.5",
+      "liters": 2.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "Duratorq 2.2",
+      "liters": 2.2,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "Duratorq 3.2",
+      "liters": 3.2,
+      "cyl": 5,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "EcoBlue 2.0",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "Lion 3.0 V6",
+      "liters": 3,
+      "cyl": 6,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "V"
+    },
+    {
+      "code": "Sigma 1.6",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "Duratec 2.0",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "Duratec 2.0 GDI",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "Dragon 1.5",
+      "liters": 1.5,
+      "cyl": 3,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "Cyclone 3.5",
+      "liters": 3.5,
+      "cyl": 6,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "V"
+    },
+    {
+      "code": "EcoBoost 2.0",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "EcoBoost 2.3",
+      "liters": 2.3,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "Nano 3.0",
+      "liters": 3,
+      "cyl": 6,
+      "fuel": "Gasolina",
+      "turbo": true,
+      "layout": "V"
+    },
+    {
+      "code": "Coyote 5.0",
+      "liters": 5,
+      "cyl": 8,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "V"
+    },
+    {
+      "code": "EcoBoost 3.5",
+      "liters": 3.5,
+      "cyl": 6,
+      "fuel": "Gasolina",
+      "turbo": true,
+      "layout": "V"
+    },
+    {
+      "code": "EA111 1.6",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "EA211 1.6",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "BGP 2.5",
+      "liters": 2.5,
+      "cyl": 5,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "CBP 2.0",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "CBTA 2.5",
+      "liters": 2.5,
+      "cyl": 5,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "EA211 1.4 TSI",
+      "liters": 1.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "EA888 2.0T",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "CDCA 2.0 BiTDI",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "V6 3.0 TDI",
+      "liters": 3,
+      "cyl": 6,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "V"
+    },
+    {
+      "code": "CFNA 1.6",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "R18A",
+      "liters": 1.8,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "R18Z",
+      "liters": 1.8,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "L15B7",
+      "liters": 1.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "K20C2",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "K24Z",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "R20A",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "K24W",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "L15A",
+      "liters": 1.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "L15Z",
+      "liters": 1.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4EE",
+      "liters": 1.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4ED",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4FA",
+      "liters": 1.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4FC",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4FG",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4NB",
+      "liters": 1.8,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4NA",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4GC",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4KD",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "D4HA",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "G4NH",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4KN",
+      "liters": 2.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4LA",
+      "liters": 1.2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4LC",
+      "liters": 1.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G3LA",
+      "liters": 1,
+      "cyl": 3,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "G4KJ",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "D4HB",
+      "liters": 2.2,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "ZY-VE",
+      "liters": 1.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "P5-VPS",
+      "liters": 1.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "LF-DE",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "Z6",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "PE-VPS",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "PY-VPS",
+      "liters": 2.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "4D56",
+      "liters": 2.5,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "4G64",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "4N15",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Diésel",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "4B11",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "4A91",
+      "liters": 1.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "4B12",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "K14B",
+      "liters": 1.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "K12M",
+      "liters": 1.2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "J24B",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "M16A",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "M13A",
+      "liters": 1.3,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "K15B",
+      "liters": 1.5,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "K7M",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "H4M",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "K4M",
+      "liters": 1.6,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "F4R",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "B4D",
+      "liters": 1,
+      "cyl": 3,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    },
+    {
+      "code": "Pentastar 3.6",
+      "liters": 3.6,
+      "cyl": 6,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "V"
+    },
+    {
+      "code": "EGH 3.8",
+      "liters": 3.8,
+      "cyl": 6,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "V"
+    },
+    {
+      "code": "GME 2.0T",
+      "liters": 2,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": true,
+      "layout": "I"
+    },
+    {
+      "code": "HEMI 5.7",
+      "liters": 5.7,
+      "cyl": 8,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "V"
+    },
+    {
+      "code": "Tigershark 2.4",
+      "liters": 2.4,
+      "cyl": 4,
+      "fuel": "Gasolina",
+      "turbo": false,
+      "layout": "I"
+    }
+  ],
+  "models": [
+    {
+      "id": "toyota-corolla",
+      "make_id": "toyota",
+      "name": "Corolla",
+      "body": "Sedán",
+      "aliases": [
+        "corola"
+      ],
+      "gens": [
+        {
+          "code": "E140",
+          "from": 2008,
+          "to": 2013,
+          "engines": [
+            "1ZZ-FE",
+            "2ZR-FE"
+          ]
+        },
+        {
+          "code": "E170",
+          "from": 2014,
+          "to": 2019,
+          "engines": [
+            "1ZR-FE",
+            "2ZR-FE"
+          ]
+        },
+        {
+          "code": "E210",
+          "from": 2020,
+          "to": 2026,
+          "engines": [
+            "M20A-FKS",
+            "2ZR-FXE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "toyota-yaris",
+      "make_id": "toyota",
+      "name": "Yaris",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "XP90",
+          "from": 2006,
+          "to": 2013,
+          "engines": [
+            "1NZ-FE"
+          ]
+        },
+        {
+          "code": "XP150",
+          "from": 2014,
+          "to": 2026,
+          "engines": [
+            "1NZ-FE",
+            "2NR-FE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "toyota-hilux",
+      "make_id": "toyota",
+      "name": "Hilux",
+      "body": "Pickup",
+      "aliases": [
+        "hi lux"
+      ],
+      "gens": [
+        {
+          "code": "AN10",
+          "from": 2005,
+          "to": 2015,
+          "engines": [
+            "2TR-FE",
+            "1KD-FTV"
+          ]
+        },
+        {
+          "code": "AN120",
+          "from": 2016,
+          "to": 2026,
+          "engines": [
+            "2TR-FE",
+            "1GD-FTV",
+            "2GD-FTV"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "toyota-rav4",
+      "make_id": "toyota",
+      "name": "RAV4",
+      "body": "SUV",
+      "aliases": [
+        "rav 4",
+        "rav-4"
+      ],
+      "gens": [
+        {
+          "code": "XA30",
+          "from": 2006,
+          "to": 2012,
+          "engines": [
+            "2AZ-FE"
+          ]
+        },
+        {
+          "code": "XA40",
+          "from": 2013,
+          "to": 2018,
+          "engines": [
+            "3ZR-FAE",
+            "2AR-FE"
+          ]
+        },
+        {
+          "code": "XA50",
+          "from": 2019,
+          "to": 2026,
+          "engines": [
+            "M20A-FKS",
+            "A25A-FKS"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "toyota-fortuner",
+      "make_id": "toyota",
+      "name": "Fortuner",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "AN50",
+          "from": 2006,
+          "to": 2015,
+          "engines": [
+            "2TR-FE",
+            "1KD-FTV"
+          ]
+        },
+        {
+          "code": "AN150",
+          "from": 2016,
+          "to": 2026,
+          "engines": [
+            "2TR-FE",
+            "1GD-FTV"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "toyota-prado",
+      "make_id": "toyota",
+      "name": "Land Cruiser Prado",
+      "body": "SUV",
+      "aliases": [
+        "prado",
+        "land cruiser"
+      ],
+      "gens": [
+        {
+          "code": "J150",
+          "from": 2010,
+          "to": 2026,
+          "engines": [
+            "2TR-FE",
+            "1GD-FTV",
+            "1GR-FE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nissan-sentra",
+      "make_id": "nissan",
+      "name": "Sentra",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "B16",
+          "from": 2007,
+          "to": 2012,
+          "engines": [
+            "MR20DE"
+          ]
+        },
+        {
+          "code": "B17",
+          "from": 2013,
+          "to": 2019,
+          "engines": [
+            "MR18DE"
+          ]
+        },
+        {
+          "code": "B18",
+          "from": 2020,
+          "to": 2026,
+          "engines": [
+            "MR20DD"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nissan-versa",
+      "make_id": "nissan",
+      "name": "Versa",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "N17",
+          "from": 2012,
+          "to": 2019,
+          "engines": [
+            "HR16DE"
+          ]
+        },
+        {
+          "code": "N18",
+          "from": 2020,
+          "to": 2026,
+          "engines": [
+            "HR16DE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nissan-frontier",
+      "make_id": "nissan",
+      "name": "Frontier / NP300",
+      "body": "Pickup",
+      "aliases": [
+        "np300",
+        "navara",
+        "frontier"
+      ],
+      "gens": [
+        {
+          "code": "D22",
+          "from": 2008,
+          "to": 2015,
+          "engines": [
+            "KA24DE",
+            "YD25DDTi"
+          ]
+        },
+        {
+          "code": "D23",
+          "from": 2016,
+          "to": 2026,
+          "engines": [
+            "QR25DE",
+            "YS23DDT"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nissan-march",
+      "make_id": "nissan",
+      "name": "March",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "K13",
+          "from": 2011,
+          "to": 2020,
+          "engines": [
+            "HR16DE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nissan-xtrail",
+      "make_id": "nissan",
+      "name": "X-Trail",
+      "body": "SUV",
+      "aliases": [
+        "xtrail",
+        "x trail"
+      ],
+      "gens": [
+        {
+          "code": "T31",
+          "from": 2008,
+          "to": 2014,
+          "engines": [
+            "MR20DE",
+            "QR25DE"
+          ]
+        },
+        {
+          "code": "T32",
+          "from": 2015,
+          "to": 2022,
+          "engines": [
+            "MR20DD",
+            "QR25DE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nissan-tiida",
+      "make_id": "nissan",
+      "name": "Tiida",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "C11",
+          "from": 2007,
+          "to": 2018,
+          "engines": [
+            "HR16DE",
+            "MR18DE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chevrolet-aveo",
+      "make_id": "chevrolet",
+      "name": "Aveo",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "T250",
+          "from": 2006,
+          "to": 2017,
+          "engines": [
+            "F16D3"
+          ]
+        },
+        {
+          "code": "T3",
+          "from": 2018,
+          "to": 2026,
+          "engines": [
+            "L2B"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chevrolet-spark",
+      "make_id": "chevrolet",
+      "name": "Spark",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "M300",
+          "from": 2010,
+          "to": 2022,
+          "engines": [
+            "B10D1",
+            "B12D1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chevrolet-sail",
+      "make_id": "chevrolet",
+      "name": "Sail",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "SAIL2",
+          "from": 2011,
+          "to": 2020,
+          "engines": [
+            "LCU"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chevrolet-onix",
+      "make_id": "chevrolet",
+      "name": "Onix",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "ONIX1",
+          "from": 2013,
+          "to": 2019,
+          "engines": [
+            "SPE-4"
+          ]
+        },
+        {
+          "code": "ONIX2",
+          "from": 2020,
+          "to": 2026,
+          "engines": [
+            "B10XFT"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chevrolet-cruze",
+      "make_id": "chevrolet",
+      "name": "Cruze",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "J300",
+          "from": 2010,
+          "to": 2016,
+          "engines": [
+            "F18D4"
+          ]
+        },
+        {
+          "code": "J400",
+          "from": 2017,
+          "to": 2023,
+          "engines": [
+            "LE2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chevrolet-silverado",
+      "make_id": "chevrolet",
+      "name": "Silverado",
+      "body": "Pickup",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "GMT900",
+          "from": 2007,
+          "to": 2013,
+          "engines": [
+            "LC9"
+          ]
+        },
+        {
+          "code": "K2XX",
+          "from": 2014,
+          "to": 2018,
+          "engines": [
+            "L83"
+          ]
+        },
+        {
+          "code": "T1XX",
+          "from": 2019,
+          "to": 2026,
+          "engines": [
+            "L84",
+            "L87"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chevrolet-captiva",
+      "make_id": "chevrolet",
+      "name": "Captiva",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "C140",
+          "from": 2007,
+          "to": 2017,
+          "engines": [
+            "LE5",
+            "Z20S"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ford-ranger",
+      "make_id": "ford",
+      "name": "Ranger",
+      "body": "Pickup",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "PX",
+          "from": 2012,
+          "to": 2022,
+          "engines": [
+            "Duratec 2.5",
+            "Duratorq 2.2",
+            "Duratorq 3.2"
+          ]
+        },
+        {
+          "code": "P703",
+          "from": 2023,
+          "to": 2026,
+          "engines": [
+            "EcoBlue 2.0",
+            "Lion 3.0 V6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ford-fiesta",
+      "make_id": "ford",
+      "name": "Fiesta",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "MK7",
+          "from": 2011,
+          "to": 2019,
+          "engines": [
+            "Sigma 1.6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ford-focus",
+      "make_id": "ford",
+      "name": "Focus",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "MK2",
+          "from": 2008,
+          "to": 2011,
+          "engines": [
+            "Duratec 2.0"
+          ]
+        },
+        {
+          "code": "MK3",
+          "from": 2012,
+          "to": 2018,
+          "engines": [
+            "Duratec 2.0 GDI",
+            "Sigma 1.6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ford-ecosport",
+      "make_id": "ford",
+      "name": "EcoSport",
+      "body": "SUV",
+      "aliases": [
+        "eco sport"
+      ],
+      "gens": [
+        {
+          "code": "B515",
+          "from": 2013,
+          "to": 2021,
+          "engines": [
+            "Sigma 1.6",
+            "Duratec 2.0",
+            "Dragon 1.5"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ford-explorer",
+      "make_id": "ford",
+      "name": "Explorer",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "U502",
+          "from": 2011,
+          "to": 2019,
+          "engines": [
+            "Cyclone 3.5",
+            "EcoBoost 2.0"
+          ]
+        },
+        {
+          "code": "U625",
+          "from": 2020,
+          "to": 2026,
+          "engines": [
+            "EcoBoost 2.3",
+            "Nano 3.0"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ford-f150",
+      "make_id": "ford",
+      "name": "F-150",
+      "body": "Pickup",
+      "aliases": [
+        "f150",
+        "f 150",
+        "lobo"
+      ],
+      "gens": [
+        {
+          "code": "P415",
+          "from": 2015,
+          "to": 2020,
+          "engines": [
+            "Coyote 5.0",
+            "EcoBoost 3.5"
+          ]
+        },
+        {
+          "code": "P702",
+          "from": 2021,
+          "to": 2026,
+          "engines": [
+            "Coyote 5.0",
+            "EcoBoost 3.5"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volkswagen-gol",
+      "make_id": "volkswagen",
+      "name": "Gol",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "G5",
+          "from": 2009,
+          "to": 2023,
+          "engines": [
+            "EA111 1.6",
+            "EA211 1.6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volkswagen-jetta",
+      "make_id": "volkswagen",
+      "name": "Jetta",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "A5",
+          "from": 2006,
+          "to": 2010,
+          "engines": [
+            "BGP 2.5"
+          ]
+        },
+        {
+          "code": "A6",
+          "from": 2011,
+          "to": 2018,
+          "engines": [
+            "CBP 2.0",
+            "CBTA 2.5",
+            "EA211 1.4 TSI"
+          ]
+        },
+        {
+          "code": "A7",
+          "from": 2019,
+          "to": 2026,
+          "engines": [
+            "EA211 1.4 TSI"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volkswagen-amarok",
+      "make_id": "volkswagen",
+      "name": "Amarok",
+      "body": "Pickup",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "2H",
+          "from": 2010,
+          "to": 2022,
+          "engines": [
+            "CDCA 2.0 BiTDI",
+            "V6 3.0 TDI"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volkswagen-golf",
+      "make_id": "volkswagen",
+      "name": "Golf",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "MK7",
+          "from": 2013,
+          "to": 2020,
+          "engines": [
+            "EA211 1.4 TSI",
+            "EA888 2.0T"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volkswagen-vento",
+      "make_id": "volkswagen",
+      "name": "Vento / Polo sedán",
+      "body": "Sedán",
+      "aliases": [
+        "vento",
+        "polo"
+      ],
+      "gens": [
+        {
+          "code": "6R",
+          "from": 2014,
+          "to": 2023,
+          "engines": [
+            "CFNA 1.6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volkswagen-tiguan",
+      "make_id": "volkswagen",
+      "name": "Tiguan",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "AD1",
+          "from": 2017,
+          "to": 2026,
+          "engines": [
+            "EA211 1.4 TSI",
+            "EA888 2.0T"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "honda-civic",
+      "make_id": "honda",
+      "name": "Civic",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "FD",
+          "from": 2006,
+          "to": 2011,
+          "engines": [
+            "R18A"
+          ]
+        },
+        {
+          "code": "FB",
+          "from": 2012,
+          "to": 2015,
+          "engines": [
+            "R18Z"
+          ]
+        },
+        {
+          "code": "FC",
+          "from": 2016,
+          "to": 2021,
+          "engines": [
+            "L15B7",
+            "K20C2"
+          ]
+        },
+        {
+          "code": "FE",
+          "from": 2022,
+          "to": 2026,
+          "engines": [
+            "L15B7",
+            "K20C2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "honda-crv",
+      "make_id": "honda",
+      "name": "CR-V",
+      "body": "SUV",
+      "aliases": [
+        "crv",
+        "cr v"
+      ],
+      "gens": [
+        {
+          "code": "RE",
+          "from": 2007,
+          "to": 2011,
+          "engines": [
+            "K24Z"
+          ]
+        },
+        {
+          "code": "RM",
+          "from": 2012,
+          "to": 2016,
+          "engines": [
+            "K24Z",
+            "R20A"
+          ]
+        },
+        {
+          "code": "RW",
+          "from": 2017,
+          "to": 2022,
+          "engines": [
+            "L15B7",
+            "K24W"
+          ]
+        },
+        {
+          "code": "RS",
+          "from": 2023,
+          "to": 2026,
+          "engines": [
+            "L15B7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "honda-fit",
+      "make_id": "honda",
+      "name": "Fit / Jazz",
+      "body": "Hatchback",
+      "aliases": [
+        "fit",
+        "jazz"
+      ],
+      "gens": [
+        {
+          "code": "GE",
+          "from": 2009,
+          "to": 2014,
+          "engines": [
+            "L15A"
+          ]
+        },
+        {
+          "code": "GK",
+          "from": 2015,
+          "to": 2020,
+          "engines": [
+            "L15Z"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "honda-hrv",
+      "make_id": "honda",
+      "name": "HR-V",
+      "body": "SUV",
+      "aliases": [
+        "hrv",
+        "hr v"
+      ],
+      "gens": [
+        {
+          "code": "RU",
+          "from": 2016,
+          "to": 2022,
+          "engines": [
+            "R18Z"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hyundai-accent",
+      "make_id": "hyundai",
+      "name": "Accent",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "MC",
+          "from": 2006,
+          "to": 2011,
+          "engines": [
+            "G4EE",
+            "G4ED"
+          ]
+        },
+        {
+          "code": "RB",
+          "from": 2012,
+          "to": 2017,
+          "engines": [
+            "G4FA",
+            "G4FC"
+          ]
+        },
+        {
+          "code": "HC",
+          "from": 2018,
+          "to": 2022,
+          "engines": [
+            "G4FG"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hyundai-elantra",
+      "make_id": "hyundai",
+      "name": "Elantra",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "HD",
+          "from": 2007,
+          "to": 2010,
+          "engines": [
+            "G4FC"
+          ]
+        },
+        {
+          "code": "MD",
+          "from": 2011,
+          "to": 2016,
+          "engines": [
+            "G4NB"
+          ]
+        },
+        {
+          "code": "AD",
+          "from": 2017,
+          "to": 2020,
+          "engines": [
+            "G4NA"
+          ]
+        },
+        {
+          "code": "CN7",
+          "from": 2021,
+          "to": 2026,
+          "engines": [
+            "G4NH"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hyundai-tucson",
+      "make_id": "hyundai",
+      "name": "Tucson",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "JM",
+          "from": 2005,
+          "to": 2009,
+          "engines": [
+            "G4GC"
+          ]
+        },
+        {
+          "code": "LM",
+          "from": 2010,
+          "to": 2015,
+          "engines": [
+            "G4KD"
+          ]
+        },
+        {
+          "code": "TL",
+          "from": 2016,
+          "to": 2020,
+          "engines": [
+            "G4NA",
+            "D4HA"
+          ]
+        },
+        {
+          "code": "NX4",
+          "from": 2021,
+          "to": 2026,
+          "engines": [
+            "G4NH",
+            "G4KN"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hyundai-creta",
+      "make_id": "hyundai",
+      "name": "Creta",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "GS",
+          "from": 2016,
+          "to": 2026,
+          "engines": [
+            "G4FG"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hyundai-i10",
+      "make_id": "hyundai",
+      "name": "Grand i10",
+      "body": "Hatchback",
+      "aliases": [
+        "i10",
+        "grand i10"
+      ],
+      "gens": [
+        {
+          "code": "BA",
+          "from": 2014,
+          "to": 2023,
+          "engines": [
+            "G4LA"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hyundai-santafe",
+      "make_id": "hyundai",
+      "name": "Santa Fe",
+      "body": "SUV",
+      "aliases": [
+        "santa fe",
+        "santafe"
+      ],
+      "gens": [
+        {
+          "code": "DM",
+          "from": 2013,
+          "to": 2018,
+          "engines": [
+            "G4KJ",
+            "D4HB"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kia-rio",
+      "make_id": "kia",
+      "name": "Rio",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "JB",
+          "from": 2006,
+          "to": 2011,
+          "engines": [
+            "G4EE"
+          ]
+        },
+        {
+          "code": "UB",
+          "from": 2012,
+          "to": 2017,
+          "engines": [
+            "G4FA",
+            "G4FC"
+          ]
+        },
+        {
+          "code": "YB",
+          "from": 2018,
+          "to": 2023,
+          "engines": [
+            "G4LC",
+            "G4FG"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kia-sportage",
+      "make_id": "kia",
+      "name": "Sportage",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "KM",
+          "from": 2005,
+          "to": 2010,
+          "engines": [
+            "G4GC"
+          ]
+        },
+        {
+          "code": "SL",
+          "from": 2011,
+          "to": 2016,
+          "engines": [
+            "G4KD",
+            "D4HA"
+          ]
+        },
+        {
+          "code": "QL",
+          "from": 2017,
+          "to": 2022,
+          "engines": [
+            "G4NA",
+            "D4HA"
+          ]
+        },
+        {
+          "code": "NQ5",
+          "from": 2023,
+          "to": 2026,
+          "engines": [
+            "G4NH",
+            "G4KN"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kia-picanto",
+      "make_id": "kia",
+      "name": "Picanto",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "TA",
+          "from": 2011,
+          "to": 2017,
+          "engines": [
+            "G4LA"
+          ]
+        },
+        {
+          "code": "JA",
+          "from": 2018,
+          "to": 2026,
+          "engines": [
+            "G3LA",
+            "G4LA"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kia-cerato",
+      "make_id": "kia",
+      "name": "Cerato / Forte",
+      "body": "Sedán",
+      "aliases": [
+        "forte",
+        "cerato"
+      ],
+      "gens": [
+        {
+          "code": "YD",
+          "from": 2014,
+          "to": 2018,
+          "engines": [
+            "G4FG",
+            "G4NB"
+          ]
+        },
+        {
+          "code": "BD",
+          "from": 2019,
+          "to": 2026,
+          "engines": [
+            "G4NH"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kia-soluto",
+      "make_id": "kia",
+      "name": "Soluto",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "AB",
+          "from": 2019,
+          "to": 2026,
+          "engines": [
+            "G4LC"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mazda-mazda2",
+      "make_id": "mazda",
+      "name": "Mazda 2",
+      "body": "Hatchback",
+      "aliases": [
+        "mazda2",
+        "m2"
+      ],
+      "gens": [
+        {
+          "code": "DE",
+          "from": 2008,
+          "to": 2014,
+          "engines": [
+            "ZY-VE"
+          ]
+        },
+        {
+          "code": "DJ",
+          "from": 2015,
+          "to": 2026,
+          "engines": [
+            "P5-VPS"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mazda-mazda3",
+      "make_id": "mazda",
+      "name": "Mazda 3",
+      "body": "Sedán",
+      "aliases": [
+        "mazda3",
+        "m3"
+      ],
+      "gens": [
+        {
+          "code": "BK",
+          "from": 2005,
+          "to": 2009,
+          "engines": [
+            "LF-DE"
+          ]
+        },
+        {
+          "code": "BL",
+          "from": 2010,
+          "to": 2013,
+          "engines": [
+            "LF-DE",
+            "Z6"
+          ]
+        },
+        {
+          "code": "BM",
+          "from": 2014,
+          "to": 2018,
+          "engines": [
+            "PE-VPS"
+          ]
+        },
+        {
+          "code": "BP",
+          "from": 2019,
+          "to": 2026,
+          "engines": [
+            "PE-VPS",
+            "PY-VPS"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mazda-cx5",
+      "make_id": "mazda",
+      "name": "CX-5",
+      "body": "SUV",
+      "aliases": [
+        "cx5",
+        "cx 5"
+      ],
+      "gens": [
+        {
+          "code": "KE",
+          "from": 2013,
+          "to": 2016,
+          "engines": [
+            "PE-VPS",
+            "PY-VPS"
+          ]
+        },
+        {
+          "code": "KF",
+          "from": 2017,
+          "to": 2026,
+          "engines": [
+            "PE-VPS",
+            "PY-VPS"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mazda-bt50",
+      "make_id": "mazda",
+      "name": "BT-50",
+      "body": "Pickup",
+      "aliases": [
+        "bt50",
+        "bt 50"
+      ],
+      "gens": [
+        {
+          "code": "UP",
+          "from": 2012,
+          "to": 2020,
+          "engines": [
+            "Duratorq 2.2",
+            "Duratorq 3.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mitsubishi-l200",
+      "make_id": "mitsubishi",
+      "name": "L200",
+      "body": "Pickup",
+      "aliases": [
+        "l 200",
+        "triton"
+      ],
+      "gens": [
+        {
+          "code": "KB",
+          "from": 2006,
+          "to": 2015,
+          "engines": [
+            "4D56",
+            "4G64"
+          ]
+        },
+        {
+          "code": "KL",
+          "from": 2016,
+          "to": 2026,
+          "engines": [
+            "4N15",
+            "4G64"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mitsubishi-montero",
+      "make_id": "mitsubishi",
+      "name": "Montero Sport",
+      "body": "SUV",
+      "aliases": [
+        "montero",
+        "pajero sport"
+      ],
+      "gens": [
+        {
+          "code": "KH",
+          "from": 2009,
+          "to": 2015,
+          "engines": [
+            "4D56"
+          ]
+        },
+        {
+          "code": "QE",
+          "from": 2016,
+          "to": 2026,
+          "engines": [
+            "4N15"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mitsubishi-lancer",
+      "make_id": "mitsubishi",
+      "name": "Lancer",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "CY",
+          "from": 2008,
+          "to": 2017,
+          "engines": [
+            "4B11",
+            "4A91"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mitsubishi-outlander",
+      "make_id": "mitsubishi",
+      "name": "Outlander",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "GF",
+          "from": 2013,
+          "to": 2021,
+          "engines": [
+            "4B11",
+            "4B12"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "suzuki-swift",
+      "make_id": "suzuki",
+      "name": "Swift",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "ZC72",
+          "from": 2011,
+          "to": 2017,
+          "engines": [
+            "K14B"
+          ]
+        },
+        {
+          "code": "ZC83",
+          "from": 2018,
+          "to": 2026,
+          "engines": [
+            "K12M"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "suzuki-vitara",
+      "make_id": "suzuki",
+      "name": "Grand Vitara / Vitara",
+      "body": "SUV",
+      "aliases": [
+        "grand vitara",
+        "vitara"
+      ],
+      "gens": [
+        {
+          "code": "JT",
+          "from": 2006,
+          "to": 2015,
+          "engines": [
+            "J24B",
+            "M16A"
+          ]
+        },
+        {
+          "code": "LY",
+          "from": 2016,
+          "to": 2026,
+          "engines": [
+            "M16A"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "suzuki-jimny",
+      "make_id": "suzuki",
+      "name": "Jimny",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "JB43",
+          "from": 2006,
+          "to": 2018,
+          "engines": [
+            "M13A"
+          ]
+        },
+        {
+          "code": "JB74",
+          "from": 2019,
+          "to": 2026,
+          "engines": [
+            "K15B"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "renault-logan",
+      "make_id": "renault",
+      "name": "Logan",
+      "body": "Sedán",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "L90",
+          "from": 2007,
+          "to": 2013,
+          "engines": [
+            "K7M"
+          ]
+        },
+        {
+          "code": "L52",
+          "from": 2014,
+          "to": 2022,
+          "engines": [
+            "K7M",
+            "H4M"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "renault-sandero",
+      "make_id": "renault",
+      "name": "Sandero",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "B90",
+          "from": 2009,
+          "to": 2014,
+          "engines": [
+            "K7M"
+          ]
+        },
+        {
+          "code": "B52",
+          "from": 2015,
+          "to": 2022,
+          "engines": [
+            "K7M",
+            "H4M"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "renault-duster",
+      "make_id": "renault",
+      "name": "Duster",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "HS",
+          "from": 2011,
+          "to": 2018,
+          "engines": [
+            "K4M",
+            "F4R"
+          ]
+        },
+        {
+          "code": "HM",
+          "from": 2019,
+          "to": 2026,
+          "engines": [
+            "H4M",
+            "F4R"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "renault-kwid",
+      "make_id": "renault",
+      "name": "Kwid",
+      "body": "Hatchback",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "BBG",
+          "from": 2017,
+          "to": 2026,
+          "engines": [
+            "B4D"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jeep-wrangler",
+      "make_id": "jeep",
+      "name": "Wrangler",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "JK",
+          "from": 2007,
+          "to": 2018,
+          "engines": [
+            "EGH 3.8",
+            "Pentastar 3.6"
+          ]
+        },
+        {
+          "code": "JL",
+          "from": 2018,
+          "to": 2026,
+          "engines": [
+            "Pentastar 3.6",
+            "GME 2.0T"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jeep-grandcherokee",
+      "make_id": "jeep",
+      "name": "Grand Cherokee",
+      "body": "SUV",
+      "aliases": [
+        "grand cherokee"
+      ],
+      "gens": [
+        {
+          "code": "WK2",
+          "from": 2011,
+          "to": 2021,
+          "engines": [
+            "Pentastar 3.6",
+            "HEMI 5.7"
+          ]
+        },
+        {
+          "code": "WL",
+          "from": 2022,
+          "to": 2026,
+          "engines": [
+            "Pentastar 3.6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jeep-compass",
+      "make_id": "jeep",
+      "name": "Compass",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "MP",
+          "from": 2017,
+          "to": 2026,
+          "engines": [
+            "Tigershark 2.4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jeep-cherokee",
+      "make_id": "jeep",
+      "name": "Cherokee",
+      "body": "SUV",
+      "aliases": [],
+      "gens": [
+        {
+          "code": "KL",
+          "from": 2014,
+          "to": 2023,
+          "engines": [
+            "Tigershark 2.4",
+            "Pentastar 3.6"
+          ]
+        }
+      ]
+    }
+  ]
+}

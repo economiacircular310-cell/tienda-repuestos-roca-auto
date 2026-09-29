@@ -1,0 +1,49 @@
+{
+  "category_aliases": {
+    "frenos": ["sistema de frenos"],
+    "suspension": ["suspension", "direccion"],
+    "motor": ["partes de motor"],
+    "filtros": ["filtros", "lubricacion", "mantenimiento", "afinacion"],
+    "encendido": ["ignicion"],
+    "electrico": ["electricidad", "sistema electrico", "sensores"],
+    "enfriamiento": ["refrigeracion", "sistema de enfriamiento"],
+    "transmision": ["caja de cambios"],
+    "escape": ["emisiones"],
+    "iluminacion": ["luces", "luz"],
+    "carroceria": ["exterior", "visibilidad"],
+    "climatizacion": ["aire acondicionado", "clima", "climatizacion", "ac"],
+    "combustible": ["inyeccion", "alimentacion"]
+  },
+  "brand_aliases": {
+    "kn": ["kn", "k and n"],
+    "mobil1": ["mobil1", "mobil"],
+    "hiq": ["hiq"],
+    "mann": ["mann", "mann filter"],
+    "ebc": ["ebc"],
+    "spectra": ["spectra"],
+    "hitachi": ["hitachi"],
+    "lac-value": ["lac", "lenin"],
+    "fel-pro": ["felpro"],
+    "acdelco": ["ac delco"]
+  },
+  "positions": {
+    "Delantero": ["delantero", "delantera", "adelante", "frontal", "front", "delanteras", "delanteros"],
+    "Trasero": ["trasero", "trasera", "atras", "posterior", "rear", "traseras", "traseros"],
+    "Izquierdo": ["izquierdo", "izquierda", "izq", "piloto", "conductor", "lado conductor"],
+    "Derecho": ["derecho", "derecha", "der", "copiloto", "acompanante", "pasajero"],
+    "Inferior": ["inferior", "abajo"],
+    "Superior": ["superior", "arriba"]
+  },
+  "tiers": {
+    "economico": ["economico", "economica", "barato", "barata", "basico", "low cost"],
+    "diario": ["uso diario", "diario", "estandar"],
+    "desempeno": ["alto desempeno", "desempeno", "performance", "deportivo", "racing", "premium", "alto rendimiento", "pro"],
+    "oem": ["original", "oem", "genuino", "genuina", "de agencia", "agencia", "equipo original"]
+  },
+  "fuels": {
+    "Diésel": ["diesel", "disel", "petrolero", "tdi", "crdi"],
+    "Gasolina": ["gasolina", "nafta", "naftero", "bencina"],
+    "Híbrido": ["hibrido", "hybrid"]
+  },
+  "noise": ["l", "lt", "lts", "litro", "litros", "cc", "v", "motor"]
+}
