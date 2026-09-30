@@ -1,0 +1,29 @@
+[Unit]
+Description=Lenin Auto Cars (tienda de repuestos)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=lenin
+Group=lenin
+WorkingDirectory=/opt/lenin-auto/data
+Environment=LENIN_FRONTEND_DIST=/opt/lenin-auto/web
+Environment=LENIN_DB=/opt/lenin-auto/data/pedidos.sqlite3
+EnvironmentFile=/opt/lenin-auto/.env
+ExecStart=/opt/lenin-auto/venv/bin/uvicorn lenin_auto.api:app --host 127.0.0.1 --port 8000 --proxy-headers --workers 2
+Restart=always
+RestartSec=3
+
+# Endurecimiento: el proceso solo puede escribir en data/
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+ReadWritePaths=/opt/lenin-auto/data
+
+[Install]
+WantedBy=multi-user.target

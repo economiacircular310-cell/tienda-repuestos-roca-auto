@@ -54,3 +54,11 @@ def test_cabeceras_de_seguridad(tiny: TestClient) -> None:
     assert h["x-frame-options"] == "DENY"
     assert "default-src 'self'" in h["content-security-policy"]
     assert "frame-ancestors 'none'" in h["content-security-policy"]
+
+
+def test_ip_detras_de_proxy_no_se_puede_falsear() -> None:
+    from lenin_auto.security import _client_key
+
+    scope = {"client": ("10.0.0.2", 5000), "headers": [(b"x-forwarded-for", b"1.2.3.4, 203.0.113.9")]}
+    assert _client_key(scope, trust_proxy=True) == "203.0.113.9"  # la que agregó el proxy
+    assert _client_key(scope, trust_proxy=False) == "10.0.0.2"

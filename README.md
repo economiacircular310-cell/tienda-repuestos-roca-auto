@@ -63,6 +63,16 @@ El volumen `/app/data` conserva la base de pedidos (SQLite) entre despliegues.
 
 Corre en cualquier servicio que acepte Docker (Render, Railway, Fly.io, un VPS).
 
+### Paquete para el servidor
+
+```bash
+deploy/empaquetar.sh        # → dist-servidor/lenin-auto-cars-<versión>.zip
+```
+
+El zip trae el motor, la interfaz ya compilada (el servidor no necesita Node), un
+instalador para VPS Ubuntu 24.04 / Debian 12 (`sudo ./instalar.sh tu-dominio.com`: systemd
+endurecido + nginx), `docker-compose.yml` y la guía paso a paso: [deploy/README.md](deploy/README.md).
+
 ## Probar desde la terminal
 
 ```bash
@@ -114,7 +124,7 @@ Los pedidos se gestionan desde la terminal:
 
 ## Calidad
 
-CI en cada PR: ruff, mypy estricto y 83 pruebas pytest en el backend; typecheck, formato y
+CI en cada PR: ruff, mypy estricto y 84 pruebas pytest en el backend; typecheck, formato y
 build en el frontend; y la imagen Docker. Dos pruebas que valen por muchas:
 
 - **Ida y vuelta**: exportar las 20 885 piezas a CSV y volver a importarlas da exactamente

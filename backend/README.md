@@ -81,6 +81,6 @@ lenin_auto/
 ruff check . && ruff format --check . && mypy lenin_auto && pytest
 ```
 
-mypy en modo estricto; 83 pruebas cubren texto, búsqueda, diagnóstico, mantenimiento,
+mypy en modo estricto; 84 pruebas cubren texto, búsqueda, diagnóstico, mantenimiento,
 confianza, logística, VIN, pedidos, seguridad, el importador (ida y vuelta de las 20 885
 piezas) y la API, más pruebas diferenciales del motor contra su definición literal.

@@ -1,0 +1,17 @@
+# Uso:  cp .env.ejemplo .env   (y pon tu LENIN_SECRET)   →   docker compose up -d --build
+services:
+  tienda:
+    build: .
+    image: lenin-auto-cars
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # El puerto solo escucha en 127.0.0.1: únicamente el nginx de este servidor llega a él.
+      FORWARDED_ALLOW_IPS: "*"
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - datos:/app/data
+
+volumes:
+  datos:

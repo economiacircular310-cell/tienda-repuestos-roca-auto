@@ -368,7 +368,10 @@ def main(argv: Sequence[str] | None = None) -> None:
     p.add_argument("--recargar", action="store_true")
 
     args = ap.parse_args(argv)
-    args.fn(args)
+    try:
+        args.fn(args)
+    except BrokenPipeError:  # «… | head»: quien lee cerró la tubería; no es un error
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
 
 
 if __name__ == "__main__":

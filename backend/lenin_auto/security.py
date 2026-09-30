@@ -61,10 +61,14 @@ class TokenBucket:
 
 
 def _client_key(scope: Scope, trust_proxy: bool) -> str:
+    """IP del cliente. Detrás de un proxy de confianza, la **última** de ``X-Forwarded-For``:
+    es la que agrega el proxy; las anteriores las escribe el cliente y se pueden falsear."""
     if trust_proxy:
         for name, value in scope.get("headers", ()):
             if name == b"x-forwarded-for":
-                return str(value.decode("latin-1").split(",")[0].strip())
+                last = str(value.decode("latin-1")).rsplit(",", 1)[-1].strip()
+                if last:
+                    return last
     client = scope.get("client")
     return str(client[0]) if client else "anon"
 
