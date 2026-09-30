@@ -92,12 +92,12 @@ function Checkout({ quote, onBack }: { quote: Cart; onBack: () => void }) {
               required={f.required}
               value={form[f.id]}
               onChange={(e) => setForm((x) => ({ ...x, [f.id]: e.target.value }))}
-              className="h-11 w-full rounded-md border border-line-strong bg-surface px-3 text-[15px] outline-none focus:border-link focus:ring-2 focus:ring-link/30"
+              className="h-11 w-full rounded-md border border-line-strong bg-surface px-3 text-[15px] outline-none focus:border-link focus:ring-2 focus:ring-link-a30"
             />
           </label>
         ))}
         {vehicle ? (
-          <label htmlFor="co-certify" className="flex cursor-pointer items-start gap-3 rounded-lg border border-ok/40 bg-ok-soft p-3 text-sm">
+          <label htmlFor="co-certify" className="flex cursor-pointer items-start gap-3 rounded-lg border border-ok-a40 bg-ok-soft p-3 text-sm">
             <input
               id="co-certify"
               type="checkbox"
@@ -162,7 +162,7 @@ export function CartDrawer() {
 
   return (
     <div className="fixed inset-0 z-[70]" role="dialog" aria-modal="true" aria-label="Carrito">
-      <button type="button" className="absolute inset-0 bg-bp/60" onClick={close} aria-label="Cerrar carrito" tabIndex={-1} />
+      <button type="button" className="absolute inset-0 bg-bp-a60" onClick={close} aria-label="Cerrar carrito" tabIndex={-1} />
       <aside className="anim-slide absolute top-0 right-0 flex h-full w-full max-w-md flex-col bg-surface pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)] shadow-float">
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 className="font-display text-2xl font-bold uppercase">{step === 'checkout' ? 'Tus datos' : 'Carrito'}</h2>

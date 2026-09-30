@@ -177,7 +177,7 @@ export function OrderPage({ code }: { code?: string }) {
                     <a
                       href={href(`/verificar?t=${l.certificate.token}`)}
                       onClick={linkClick(`/verificar?t=${l.certificate.token}`)}
-                      className="mt-1.5 inline-flex items-center gap-1.5 rounded-sm border border-ok/40 bg-ok-soft px-2 py-0.5 font-mono text-[11px] text-ok"
+                      className="mt-1.5 inline-flex items-center gap-1.5 rounded-sm border border-ok-a40 bg-ok-soft px-2 py-0.5 font-mono text-[11px] text-ok"
                     >
                       <BadgeCheck size={12} /> {l.certificate.code}
                     </a>

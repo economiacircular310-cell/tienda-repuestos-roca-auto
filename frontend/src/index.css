@@ -8,9 +8,9 @@
  */
 :root {
   --bg: #eef1f5;
-  --surface: #ffffff;
-  --surface-2: #f5f7fa;
-  --ink: #0d1b2a;
+  --surface-rgb: 255 255 255;
+  --surface-2-rgb: 245 247 250;
+  --ink-rgb: 13 27 42;
   --ink-2: #33455a;
   --muted: #5a6b7f;
   --line: #d3dae3;
@@ -18,21 +18,21 @@
   --accent: #ffc31f;
   --accent-ink: #1a1400;
   --accent-soft: #fff3cc;
-  --link: #1f4cc7;
-  --ok: #0f7a45;
+  --link-rgb: 31 76 199;
+  --ok-rgb: 15 122 69;
   --ok-soft: #e3f4ea;
-  --warn: #a4570b;
+  --warn-rgb: 164 87 11;
   --warn-soft: #fcefdc;
-  --danger: #c0321e;
-  --bp: #0e2745;
+  --danger-rgb: 192 50 30;
+  --bp-rgb: 14 39 69;
   --bp-2: #133259;
   --bp-grid: #1b3960;
   --bp-grid-fine: #152f52;
-  --bp-ink: #dce9fa;
+  --bp-ink-rgb: 220 233 250;
   --bp-dim: #8aa8cf;
-  --t-eco: #64748b;
-  --t-daily: #1f4cc7;
-  --t-perf: #c0321e;
+  --t-eco-rgb: 100 116 139;
+  --t-daily-rgb: 31 76 199;
+  --t-perf-rgb: 192 50 30;
   --t-oem: #0d1b2a;
   --shadow: 0 1px 2px rgb(13 27 42 / 0.06), 0 8px 24px -12px rgb(13 27 42 / 0.18);
   --shadow-lg: 0 24px 64px -20px rgb(13 27 42 / 0.45);
@@ -42,9 +42,9 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     --bg: #0a0f16;
-    --surface: #111923;
-    --surface-2: #16202d;
-    --ink: #e5ecf4;
+    --surface-rgb: 17 25 35;
+    --surface-2-rgb: 22 32 45;
+    --ink-rgb: 229 236 244;
     --ink-2: #c1ccd9;
     --muted: #8b9bb0;
     --line: #223043;
@@ -52,21 +52,21 @@
     --accent: #ffc31f;
     --accent-ink: #1a1400;
     --accent-soft: #3a2f0a;
-    --link: #8fb0ff;
-    --ok: #3fcf85;
+    --link-rgb: 143 176 255;
+    --ok-rgb: 63 207 133;
     --ok-soft: #0f2d1e;
-    --warn: #f0a43a;
+    --warn-rgb: 240 164 58;
     --warn-soft: #33230c;
-    --danger: #ff7a66;
-    --bp: #0a1d35;
+    --danger-rgb: 255 122 102;
+    --bp-rgb: 10 29 53;
     --bp-2: #0e2544;
     --bp-grid: #17345a;
     --bp-grid-fine: #112a4a;
-    --bp-ink: #dce9fa;
+    --bp-ink-rgb: 220 233 250;
     --bp-dim: #7f9dc4;
-    --t-eco: #94a3b8;
-    --t-daily: #8fb0ff;
-    --t-perf: #ff7a66;
+    --t-eco-rgb: 148 163 184;
+    --t-daily-rgb: 143 176 255;
+    --t-perf-rgb: 255 122 102;
     --t-oem: #e5ecf4;
     --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
     --shadow-lg: 0 24px 64px -20px rgb(0 0 0 / 0.8);
@@ -76,9 +76,9 @@
 
 :root[data-theme='dark'] {
   --bg: #0a0f16;
-  --surface: #111923;
-  --surface-2: #16202d;
-  --ink: #e5ecf4;
+  --surface-rgb: 17 25 35;
+  --surface-2-rgb: 22 32 45;
+  --ink-rgb: 229 236 244;
   --ink-2: #c1ccd9;
   --muted: #8b9bb0;
   --line: #223043;
@@ -86,25 +86,48 @@
   --accent: #ffc31f;
   --accent-ink: #1a1400;
   --accent-soft: #3a2f0a;
-  --link: #8fb0ff;
-  --ok: #3fcf85;
+  --link-rgb: 143 176 255;
+  --ok-rgb: 63 207 133;
   --ok-soft: #0f2d1e;
-  --warn: #f0a43a;
+  --warn-rgb: 240 164 58;
   --warn-soft: #33230c;
-  --danger: #ff7a66;
-  --bp: #0a1d35;
+  --danger-rgb: 255 122 102;
+  --bp-rgb: 10 29 53;
   --bp-2: #0e2544;
   --bp-grid: #17345a;
   --bp-grid-fine: #112a4a;
-  --bp-ink: #dce9fa;
+  --bp-ink-rgb: 220 233 250;
   --bp-dim: #7f9dc4;
-  --t-eco: #94a3b8;
-  --t-daily: #8fb0ff;
-  --t-perf: #ff7a66;
+  --t-eco-rgb: 148 163 184;
+  --t-daily-rgb: 143 176 255;
+  --t-perf-rgb: 255 122 102;
   --t-oem: #e5ecf4;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
   --shadow-lg: 0 24px 64px -20px rgb(0 0 0 / 0.8);
   color-scheme: dark;
+}
+
+/*
+ * Colores con transparencia que funcionan en cualquier navegador.
+ * Las opacidades de Tailwind 4 («bg-bp/60») usan color-mix(); en navegadores sin esa función
+ * (Chrome < 111, Safari < 16.4, muchos Android) quedan OPACAS, y el fondo de cada panel
+ * (carrito, buscador, filtros, vehículo) tapaba la pantalla de azul noche. Por eso estos colores
+ * se guardan como canales RGB y la transparencia se escribe con rgb(… / alfa): tokens «-aNN»
+ * abajo. `npm run build` falla si vuelve a aparecer una opacidad con color-mix().
+ */
+:root {
+  --surface: rgb(var(--surface-rgb));
+  --surface-2: rgb(var(--surface-2-rgb));
+  --ink: rgb(var(--ink-rgb));
+  --ok: rgb(var(--ok-rgb));
+  --link: rgb(var(--link-rgb));
+  --danger: rgb(var(--danger-rgb));
+  --warn: rgb(var(--warn-rgb));
+  --bp: rgb(var(--bp-rgb));
+  --bp-ink: rgb(var(--bp-ink-rgb));
+  --t-eco: rgb(var(--t-eco-rgb));
+  --t-daily: rgb(var(--t-daily-rgb));
+  --t-perf: rgb(var(--t-perf-rgb));
 }
 
 @theme inline {
@@ -134,6 +157,28 @@
   --color-t-daily: var(--t-daily);
   --color-t-perf: var(--t-perf);
   --color-t-oem: var(--t-oem);
+  /* transparencias (ver nota arriba): bg-bp-a60 = azul plano al 60 % */
+  --color-bp-a60: rgb(var(--bp-rgb) / 0.6);
+  --color-bp-a70: rgb(var(--bp-rgb) / 0.7);
+  --color-bp-a80: rgb(var(--bp-rgb) / 0.8);
+  --color-surface-a20: rgb(var(--surface-rgb) / 0.2);
+  --color-surface-a70: rgb(var(--surface-rgb) / 0.7);
+  --color-surface-a85: rgb(var(--surface-rgb) / 0.85);
+  --color-surface-a95: rgb(var(--surface-rgb) / 0.95);
+  --color-surface-2-a60: rgb(var(--surface-2-rgb) / 0.6);
+  --color-ink-a10: rgb(var(--ink-rgb) / 0.1);
+  --color-ink-a30: rgb(var(--ink-rgb) / 0.3);
+  --color-bp-ink-a85: rgb(var(--bp-ink-rgb) / 0.85);
+  --color-ok-a40: rgb(var(--ok-rgb) / 0.4);
+  --color-ok-a50: rgb(var(--ok-rgb) / 0.5);
+  --color-danger-a40: rgb(var(--danger-rgb) / 0.4);
+  --color-danger-a50: rgb(var(--danger-rgb) / 0.5);
+  --color-warn-a40: rgb(var(--warn-rgb) / 0.4);
+  --color-link-a30: rgb(var(--link-rgb) / 0.3);
+  --color-link-a40: rgb(var(--link-rgb) / 0.4);
+  --color-t-eco-a60: rgb(var(--t-eco-rgb) / 0.6);
+  --color-t-daily-a60: rgb(var(--t-daily-rgb) / 0.6);
+  --color-t-perf-a60: rgb(var(--t-perf-rgb) / 0.6);
   --font-display: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
   --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;

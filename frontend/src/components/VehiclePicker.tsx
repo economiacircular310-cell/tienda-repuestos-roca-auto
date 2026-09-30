@@ -30,7 +30,7 @@ function Field(props: {
         value={value}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value)}
-        className={`h-11 w-full min-w-0 cursor-pointer appearance-none truncate rounded-md border pr-8 pl-3 text-[15px] font-medium transition outline-none focus:border-link focus:ring-2 focus:ring-link/30 disabled:cursor-not-allowed ${
+        className={`h-11 w-full min-w-0 cursor-pointer appearance-none truncate rounded-md border pr-8 pl-3 text-[15px] font-medium transition outline-none focus:border-link focus:ring-2 focus:ring-link-a30 disabled:cursor-not-allowed ${
           dark ? 'border-bp-grid bg-bp-2 text-bp-ink' : 'border-line-strong bg-surface text-ink'
         }`}
       >

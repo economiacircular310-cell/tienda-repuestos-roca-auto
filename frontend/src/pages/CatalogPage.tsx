@@ -75,10 +75,10 @@ export function CatalogPage({ segs }: { segs: string[] }) {
                         {it.icon && <PartGlyph cat={it.icon} className={`size-5 shrink-0 ${on ? 'text-accent' : 'text-link'}`} />}
                         <span className="min-w-0 flex-1">
                           <span className="block truncate font-medium">{it.label}</span>
-                          {it.sub && <span className={`block truncate font-mono text-[11px] ${on ? 'text-surface/70' : 'text-muted'}`}>{it.sub}</span>}
+                          {it.sub && <span className={`block truncate font-mono text-[11px] ${on ? 'text-surface-a70' : 'text-muted'}`}>{it.sub}</span>}
                         </span>
                         {it.count != null && (
-                          <span className={`tabular font-mono text-[11px] ${on ? 'text-surface/70' : 'text-muted'}`}>{fmtInt(it.count)}</span>
+                          <span className={`tabular font-mono text-[11px] ${on ? 'text-surface-a70' : 'text-muted'}`}>{fmtInt(it.count)}</span>
                         )}
                         <ChevronRight size={14} className={on ? 'text-accent' : 'text-line-strong'} />
                       </a>

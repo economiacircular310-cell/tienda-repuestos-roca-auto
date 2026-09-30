@@ -156,3 +156,4 @@ docker compose exec -T tienda tar czf - /app/data > respaldo-$(date +%F).tgz    
 | El dominio no abre | El registro A apunta a la IP del servidor y el puerto 80/443 está abierto (`sudo ufw allow 'Nginx Full'`) |
 | «Se necesita Python 3.11» | El sistema es antiguo: usa la opción Docker |
 | Los certificados dicen «no válido» | Cambió `LENIN_SECRET`; restaura el anterior |
+| Al abrir un menú la pantalla queda azul oscuro o negra | Versión anterior a la 2.1.1 (fallaba en navegadores de antes de 2023): actualiza |

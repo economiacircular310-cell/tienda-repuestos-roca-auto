@@ -40,7 +40,7 @@ export function Finder({ samples }: { samples: { label: string; value: string; n
   };
 
   return (
-    <div className="rounded-xl border border-bp-grid bg-bp/80 p-4 shadow-float backdrop-blur-sm sm:p-5">
+    <div className="rounded-xl border border-bp-grid bg-bp-a80 p-4 shadow-float backdrop-blur-sm sm:p-5">
       <div role="tablist" aria-label="Forma de búsqueda" className="mb-4 grid grid-cols-3 gap-1 rounded-lg bg-bp-2 p-1">
         {tabs.map((t) => (
           <button

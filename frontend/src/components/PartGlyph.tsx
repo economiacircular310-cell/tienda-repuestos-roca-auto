@@ -39,7 +39,7 @@ const GLYPHS: Record<string, ReactNode> = {
       <circle cx="56" cy="62" r="15" />
       <g className="fill-current stroke-none">{ring(56, 62, 9, 5, 2.2, -Math.PI / 2)}</g>
       <g className="fill-current stroke-none opacity-70">{ring(56, 62, 36, 8, 1.8, 0.2)}</g>
-      <path d="M78 16c16 6 28 20 30 38l-14 3c-2-12-10-22-20-27z" className="fill-current/15" />
+      <path d="M78 16c16 6 28 20 30 38l-14 3c-2-12-10-22-20-27z" className="fill-current [fill-opacity:0.15]" />
       <path d="M86 30l6-4M96 44l7-2" />
     </>
   ),
@@ -100,7 +100,7 @@ const GLYPHS: Record<string, ReactNode> = {
       <rect x="28" y="26" width="14" height="10" rx="1" />
       <rect x="78" y="26" width="14" height="10" rx="1" />
       <path d="M31 50h8M35 46v8M81 50h8" />
-      <path d="M62 52l-10 18h10l-6 16 16-22H60l6-12z" className="fill-current/15" />
+      <path d="M62 52l-10 18h10l-6 16 16-22H60l6-12z" className="fill-current [fill-opacity:0.15]" />
     </>
   ),
   enfriamiento: (
@@ -136,14 +136,14 @@ const GLYPHS: Record<string, ReactNode> = {
     <>
       <path d="M18 30h56c14 0 24 12 24 30s-10 30-24 30H18z" />
       <circle cx="50" cy="60" r="18" />
-      <circle cx="50" cy="60" r="7" className="fill-current/20" />
+      <circle cx="50" cy="60" r="7" className="fill-current [fill-opacity:0.2]" />
       <path d="M102 44l14-6M104 60h14M102 76l14 6" />
     </>
   ),
   carroceria: (
     <>
       <path d="M26 30c0-6 6-10 14-10h46c8 0 14 6 12 14l-6 34c-2 8-8 12-16 12H38c-8 0-12-6-12-12z" />
-      <path d="M34 36h54l-5 30H40z" className="fill-current/10" />
+      <path d="M34 36h54l-5 30H40z" className="fill-current [fill-opacity:0.1]" />
       <path d="M52 80l-6 22h24l-6-22" />
       <path d="M40 102h40" />
     </>
@@ -162,7 +162,7 @@ const GLYPHS: Record<string, ReactNode> = {
       <path d="M44 18h22v10H44z" />
       <path d="M40 28h34c6 0 10 4 10 10v62c0 4-3 7-7 7H37c-4 0-7-3-7-7V40c0-7 4-12 10-12z" />
       <path d="M84 44h6c4 0 6 3 6 6v18c0 3-2 6-6 6h-6" />
-      <rect x="40" y="56" width="34" height="30" rx="2" className="fill-current/10" />
+      <rect x="40" y="56" width="34" height="30" rx="2" className="fill-current [fill-opacity:0.1]" />
       <path d="M46 66h22M46 74h14" />
     </>
   ),

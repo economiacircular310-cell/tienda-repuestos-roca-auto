@@ -4,9 +4,9 @@ import type { Product, TierId } from '../api/types';
 import { fmtMoney } from '../config';
 
 export const TIER_STYLE: Record<TierId, string> = {
-  economico: 'border-t-eco/60 text-t-eco',
-  diario: 'border-t-daily/60 text-t-daily',
-  desempeno: 'border-t-perf/60 text-t-perf',
+  economico: 'border-t-eco-a60 text-t-eco',
+  diario: 'border-t-daily-a60 text-t-daily',
+  desempeno: 'border-t-perf-a60 text-t-perf',
   oem: 'border-t-oem bg-t-oem text-surface',
 };
 
@@ -137,7 +137,7 @@ export function CopyPN({ value, className = '' }: { value: string; className?: s
 
 /** Nota de confianza de la marca (A+ … D), calculada en el servidor. */
 export function TrustGrade({ brand }: { brand: Product['brand'] }) {
-  const tone = brand.trust >= 80 ? 'text-ok border-ok/40' : brand.trust >= 60 ? 'text-ink-2 border-line-strong' : 'text-warn border-warn/40';
+  const tone = brand.trust >= 80 ? 'text-ok border-ok-a40' : brand.trust >= 60 ? 'text-ink-2 border-line-strong' : 'text-warn border-warn-a40';
   return (
     <span
       className={`inline-flex items-center gap-1 rounded-sm border px-1.5 py-px text-[10px] font-semibold ${tone}`}

@@ -317,7 +317,7 @@ export function SearchPage() {
       {data && (
         <div className="mt-4 space-y-3">
           {data.vehicle && P.fitOnly ? (
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border border-ok/40 bg-ok-soft px-4 py-3 text-sm">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border border-ok-a40 bg-ok-soft px-4 py-3 text-sm">
               <Car size={18} className="text-ok" />
               <span className="min-w-0 flex-1">
                 Solo piezas compatibles con <b>{data.vehicle.label}</b>
@@ -380,7 +380,7 @@ export function SearchPage() {
                   className="inline-flex items-center gap-1.5 rounded-full border border-ink bg-ink py-0.5 pr-1 pl-2.5 text-[12px] font-medium text-surface"
                 >
                   {c.label}
-                  <button type="button" onClick={c.clear} className="rounded-full p-0.5 hover:bg-surface/20" aria-label={`Quitar ${c.label}`}>
+                  <button type="button" onClick={c.clear} className="rounded-full p-0.5 hover:bg-surface-a20" aria-label={`Quitar ${c.label}`}>
                     <X size={12} />
                   </button>
                 </span>
@@ -529,7 +529,7 @@ export function SearchPage() {
 
       {showFilters && (
         <div className="fixed inset-0 z-[65] lg:hidden" role="dialog" aria-modal="true" aria-label="Filtros">
-          <button type="button" className="absolute inset-0 bg-bp/60" onClick={() => setShowFilters(false)} aria-label="Cerrar filtros" tabIndex={-1} />
+          <button type="button" className="absolute inset-0 bg-bp-a60" onClick={() => setShowFilters(false)} aria-label="Cerrar filtros" tabIndex={-1} />
           <div className="anim-slide absolute top-0 right-0 flex h-full w-[88%] max-w-sm flex-col bg-surface pt-[env(safe-area-inset-top,0px)]">
             <div className="flex items-center justify-between border-b border-line px-4 py-3">
               <p className="font-display text-2xl font-bold uppercase">Filtros</p>

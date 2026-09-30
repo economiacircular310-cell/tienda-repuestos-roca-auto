@@ -86,7 +86,7 @@ function TrustPanel({ d }: { d: ProductDetail }) {
         </div>
       </dl>
       {d.certificate && (
-        <div className="mt-5 flex flex-wrap items-center gap-4 rounded-lg border border-ok/40 bg-ok-soft p-4">
+        <div className="mt-5 flex flex-wrap items-center gap-4 rounded-lg border border-ok-a40 bg-ok-soft p-4">
           <BadgeCheck size={28} className="shrink-0 text-ok" />
           <div className="min-w-0 flex-1">
             <p className="label-caps text-[10px] text-ok">Certificado de compatibilidad · HMAC-SHA256</p>
@@ -98,7 +98,7 @@ function TrustPanel({ d }: { d: ProductDetail }) {
           <a
             href={href(`/verificar?t=${d.certificate.token}`)}
             onClick={linkClick(`/verificar?t=${d.certificate.token}`)}
-            className="rounded-md border border-ok/50 px-3 py-2 text-sm font-semibold text-ok hover:bg-ok hover:text-surface"
+            className="rounded-md border border-ok-a50 px-3 py-2 text-sm font-semibold text-ok hover:bg-ok hover:text-surface"
           >
             Verificar firma
           </a>
@@ -195,9 +195,9 @@ export function ProductPage({ id }: { id: string }) {
             <div
               className={`mt-4 flex items-start gap-3 rounded-lg border p-3 text-sm ${
                 fit.status === 'confirmada'
-                  ? 'border-ok/40 bg-ok-soft'
+                  ? 'border-ok-a40 bg-ok-soft'
                   : fit.status === 'no'
-                    ? 'border-danger/40 bg-warn-soft'
+                    ? 'border-danger-a40 bg-warn-soft'
                     : 'border-dashed border-line-strong'
               }`}
             >

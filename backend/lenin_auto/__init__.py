@@ -14,4 +14,4 @@ Paquetes:
     store       fachada que arma todo una sola vez (la usan la API y la CLI)
 """
 
-__version__ = "2.1.0"
+__version__ = "2.1.1"

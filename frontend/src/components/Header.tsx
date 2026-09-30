@@ -114,7 +114,7 @@ function GarageMenu() {
           setAdding(g.vehicles.length === 0);
         }}
         className={`flex h-10 max-w-[15rem] items-center gap-2 rounded-md border px-2.5 text-left transition sm:h-11 sm:px-3 ${
-          active ? 'border-ok/50 bg-ok-soft' : 'border-dashed border-line-strong hover:border-ink'
+          active ? 'border-ok-a50 bg-ok-soft' : 'border-dashed border-line-strong hover:border-ink'
         }`}
         aria-expanded={open}
         aria-haspopup="dialog"
@@ -396,7 +396,7 @@ export function Header() {
           <span className="hidden md:inline">Despacho desde 3 almacenes</span>
         </p>
       </div>
-      <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-line bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/85">
+      <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-line bg-surface-a95 backdrop-blur supports-[backdrop-filter]:bg-surface-a85">
         <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 sm:gap-4 sm:px-6 sm:py-3 md:flex-nowrap">
           <Logo />
           <div className="order-last w-full min-w-0 basis-full md:order-none md:flex-1 md:basis-auto">

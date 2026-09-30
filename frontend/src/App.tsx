@@ -14,6 +14,7 @@ import { CatalogPage } from './pages/CatalogPage';
 import { ServicePage } from './pages/ServicePage';
 import { VerifyPage } from './pages/VerifyPage';
 import { OrderPage } from './pages/OrderPage';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 function Boot() {
   const failed = useMetaFailed();
@@ -88,13 +89,19 @@ export function App() {
       >
         Saltar al contenido
       </a>
-      <Header />
+      <ErrorBoundary compact>
+        <Header />
+      </ErrorBoundary>
       <main id="contenido" key={first ?? 'home'}>
-        {page}
+        <ErrorBoundary key={route.path.join('/')}>{page}</ErrorBoundary>
       </main>
-      <Footer />
-      {meta && <SearchPalette />}
-      <CartDrawer />
+      <ErrorBoundary compact>
+        <Footer />
+      </ErrorBoundary>
+      <ErrorBoundary compact>{meta && <SearchPalette />}</ErrorBoundary>
+      <ErrorBoundary compact>
+        <CartDrawer />
+      </ErrorBoundary>
       <Toasts />
     </>
   );

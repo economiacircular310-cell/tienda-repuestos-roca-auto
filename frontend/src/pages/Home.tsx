@@ -44,7 +44,7 @@ function Hero({ home }: { home: Home | null }) {
             <br />
             <span className="mt-2 inline-block bg-accent px-2 pt-1 leading-[0.9] text-accent-ink">certificada.</span>
           </h1>
-          <p className="mt-5 max-w-[34rem] text-[17px] leading-relaxed text-bp-ink/85">
+          <p className="mt-5 max-w-[34rem] text-[17px] leading-relaxed text-bp-ink-a85">
             Escribe como hablas —<i>«me chilla al frenar el versa»</i>— o busca por número de parte, OEM o VIN. Cada pieza compatible sale con un certificado
             firmado que cualquiera puede verificar.
           </p>
@@ -84,7 +84,7 @@ function Hero({ home }: { home: Home | null }) {
         </div>
       </div>
 
-      <div className="border-t border-bp-grid bg-bp/60">
+      <div className="border-t border-bp-grid bg-bp-a60">
         <dl className="mx-auto grid max-w-[1400px] grid-cols-2 px-4 sm:px-6 lg:grid-cols-4">
           {[
             { k: 'Referencias en inventario', v: fmtInt(stats.products) },

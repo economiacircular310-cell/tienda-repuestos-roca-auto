@@ -9,5 +9,10 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: { proxy: { '/api': 'http://127.0.0.1:8000' } },
   preview: { proxy: { '/api': 'http://127.0.0.1:8000' } },
-  build: { target: 'es2022', chunkSizeWarningLimit: 900 },
+  // Navegadores desde 2022 (el mínimo de las capas CSS que usa Tailwind 4): JS sin sintaxis más nueva.
+  build: {
+    target: ['chrome99', 'edge99', 'firefox97', 'safari15.4'],
+    cssTarget: ['chrome99', 'edge99', 'firefox97', 'safari15.4'],
+    chunkSizeWarningLimit: 900,
+  },
 });

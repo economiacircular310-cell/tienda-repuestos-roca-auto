@@ -12,17 +12,17 @@ import { DiagnosisPanel } from './Diagnosis';
 import { PartGlyph } from './PartGlyph';
 
 export const CHIP_STYLE: Record<Chip['kind'], { tag: string; cls: string }> = {
-  vehicle: { tag: 'Vehículo', cls: 'border-ok/40 bg-ok-soft text-ok' },
-  engine: { tag: 'Motor', cls: 'border-ok/40 bg-ok-soft text-ok' },
-  fuel: { tag: 'Combustible', cls: 'border-ok/40 bg-ok-soft text-ok' },
-  partType: { tag: 'Pieza', cls: 'border-ink/30 bg-surface-2 text-ink' },
-  category: { tag: 'Categoría', cls: 'border-ink/30 bg-surface-2 text-ink' },
-  brand: { tag: 'Marca', cls: 'border-link/40 bg-surface-2 text-link' },
+  vehicle: { tag: 'Vehículo', cls: 'border-ok-a40 bg-ok-soft text-ok' },
+  engine: { tag: 'Motor', cls: 'border-ok-a40 bg-ok-soft text-ok' },
+  fuel: { tag: 'Combustible', cls: 'border-ok-a40 bg-ok-soft text-ok' },
+  partType: { tag: 'Pieza', cls: 'border-ink-a30 bg-surface-2 text-ink' },
+  category: { tag: 'Categoría', cls: 'border-ink-a30 bg-surface-2 text-ink' },
+  brand: { tag: 'Marca', cls: 'border-link-a40 bg-surface-2 text-link' },
   position: { tag: 'Posición', cls: 'border-accent bg-accent-soft text-ink' },
   tier: { tag: 'Nivel', cls: 'border-accent bg-accent-soft text-ink' },
   price: { tag: 'Precio', cls: 'border-accent bg-accent-soft text-ink' },
   partNumber: { tag: 'N.º parte', cls: 'border-ink bg-ink text-surface font-mono' },
-  symptom: { tag: 'Síntoma', cls: 'border-danger/50 bg-warn-soft text-danger' },
+  symptom: { tag: 'Síntoma', cls: 'border-danger-a50 bg-warn-soft text-danger' },
 };
 
 export function ChipView({ chip, onRemove }: { chip: Pick<Chip, 'kind' | 'label' | 'corrected'>; onRemove?: () => void }) {
@@ -33,7 +33,7 @@ export function ChipView({ chip, onRemove }: { chip: Pick<Chip, 'kind' | 'label'
       <span className="truncate">{chip.label}</span>
       {chip.corrected && <Sparkles size={11} aria-label="corregido" />}
       {onRemove && (
-        <button type="button" onClick={onRemove} className="rounded-full p-0.5 hover:bg-ink/10" aria-label={`Quitar ${chip.label}`}>
+        <button type="button" onClick={onRemove} className="rounded-full p-0.5 hover:bg-ink-a10" aria-label={`Quitar ${chip.label}`}>
           <X size={12} />
         </button>
       )}
@@ -228,7 +228,7 @@ export function SearchPalette() {
       aria-modal="true"
       aria-label="Buscar repuestos"
     >
-      <button type="button" className="absolute inset-0 bg-bp/70 backdrop-blur-[2px]" aria-label="Cerrar búsqueda" onClick={close} tabIndex={-1} />
+      <button type="button" className="absolute inset-0 bg-bp-a70 backdrop-blur-[2px]" aria-label="Cerrar búsqueda" onClick={close} tabIndex={-1} />
       <div className="anim-pop relative flex max-h-[88vh] w-full max-w-[760px] flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-float">
         <div className="flex items-center gap-3 border-b border-line px-4">
           <Search size={20} className="shrink-0 text-ink" />
@@ -268,7 +268,7 @@ export function SearchPalette() {
         </div>
 
         {res && (res.chips.length > 0 || res.vehicle_source === 'garage') && (
-          <div className="flex flex-wrap items-center gap-1.5 border-b border-line bg-surface-2/60 px-4 py-2.5">
+          <div className="flex flex-wrap items-center gap-1.5 border-b border-line bg-surface-2-a60 px-4 py-2.5">
             <span className="label-caps mr-1 text-[10px] text-muted">Entendí</span>
             {res.vehicle_source === 'garage' && vehicle && (
               <ChipView chip={{ kind: 'vehicle', label: `${vehicleLabel(vehicle, false)} · garaje`, corrected: false }} />
